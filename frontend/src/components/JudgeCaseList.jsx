@@ -28,12 +28,80 @@ export default function JudgeCaseList() {
   const [expandedCase, setExpandedCase] = useState(null);
   const [trialDates, setTrialDates] = useState({});
   const [editingTrialDate, setEditingTrialDate] = useState({});
+  const [courtFeedback, setCourtFeedback] = useState({});
 
   const userEmail = localStorage.getItem("userEmail");
 
   useEffect(() => {
     fetchCases();
   }, []);
+
+  // Function to handle changes in the feedback textarea
+const handleCourtFeedbackChange = (caseId, value) => {
+  setCourtFeedback({ ...courtFeedback, [caseId]: value });
+};
+
+const submitCourtFeedback = async (caseId) => {
+  const newFeedbackEntry = courtFeedback[caseId];
+  if (!newFeedbackEntry || newFeedbackEntry.trim() === "") {
+    alert("Please enter your feedback.");
+    return;
+  }
+  try {
+    // 1. Fetch case info (submitted_by and dateassigned)
+    const { data: caseData, error: caseError } = await supabase
+      .from("cases")
+      .select("submitted_by, legalAid, dateassigned")
+      .eq("id", caseId)
+      .single();
+    if (caseError) throw caseError;
+
+    // 2. Fetch the prisoner's family_email using submitted_by
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("family_email")
+      .eq("email", caseData.submitted_by)
+      .single();
+    if (userError) throw userError;
+    
+    const familyEmail = userData.family_email;
+    const dateassigned = caseData.dateassigned; // This should be a date string
+
+    // 3. Insert a new feedback record into court_feedbacks table
+    const { error: insertError } = await supabase
+      .from("court_feedbacks")
+      .insert([
+        {
+          case_id: caseId,
+          feedback: newFeedbackEntry,
+          created_at: new Date().toISOString(),
+          dateassigned: dateassigned,
+        },
+      ]);
+    if (insertError) throw insertError;
+    
+    alert("Court feedback submitted successfully!");
+    
+    // 4. Call backend endpoint /send-feedback with the family email, caseId, new feedback, and dateassigned.
+    const response = await fetch("http://localhost:5000/send-feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        toEmail: familyEmail,
+        caseId: caseId,
+        feedback: newFeedbackEntry,
+        dateassigned: dateassigned,
+      }),
+    });
+    if (!response.ok) {
+      const errData = await response.json();
+      throw new Error(errData.message || "Feedback email sending failed");
+    }
+  } catch (error) {
+    console.error("Error submitting court feedback:", error);
+    alert("Failed to submit feedback.");
+  }
+};
 
   const fetchCases = async () => {
     setLoading(true);
@@ -271,6 +339,20 @@ export default function JudgeCaseList() {
                           {caseItem.dateassigned ? "Change Trial Date" : "Input Trial Date"}
                         </button>
                       )}
+                    </div>
+                    <div className="judge-feedback-section">
+                      <textarea 
+                        placeholder="Enter court feedback here..."
+                        value={courtFeedback[caseItem.id] || ""}
+                        onChange={(e) => handleCourtFeedbackChange(caseItem.id, e.target.value)}
+                        className="judge-feedback-input"
+                      />
+                      <button 
+                        className="judge-submit-feedback-button"
+                        onClick={() => submitCourtFeedback(caseItem.id)}
+                      >
+                        Submit Court Reasoning
+                      </button>
                     </div>
                   </div>
                 )}

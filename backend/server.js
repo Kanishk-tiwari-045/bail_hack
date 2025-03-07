@@ -12,6 +12,25 @@ const { createClient } = require("@supabase/supabase-js");
 // Use your service key so that row-level security is bypassed
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
+app.post("/send-feedback", async (req, res) => {
+  const { toEmail, caseId, feedback, dateassigned } = req.body;
+  const subject = `Court Feedback: CASE-${caseId}`;
+  const text = `Court feedback for your case (ID: ${caseId}) assigned on ${dateassigned}:\n\n${feedback}`;
+  try {
+    const info = await transporter.sendMail({
+      from: `"Your App" <${process.env.EMAIL_USER}>`,
+      to: toEmail,
+      subject,
+      text,
+    });
+    console.log("Nodemailer sent feedback email:", info);
+    res.status(200).json({ message: "Feedback email sent successfully", info });
+  } catch (error) {
+    console.error("Error sending feedback email:", error);
+    res.status(500).json({ message: "Error sending feedback email", error });
+  }
+});
+
 // Configure Nodemailer transporter
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -26,10 +45,14 @@ app.post("/register", registerUser);
 app.post("/login", loginUser);
 
 // Mail Notification Route
-app.post("/send-notification", async (req, res) => {
-  const { toEmail, caseId, providerEmail } = req.body;
-  const subject = `Case Accepted: CASE-${caseId}`;
-  const text = `Your case has been accepted for review by ${providerEmail}.`;
+app.post("/send-feedback", async (req, res) => {
+  const { toEmail, caseId, feedback, dateassigned } = req.body;
+  // Check that toEmail is provided
+  if (!toEmail) {
+    return res.status(400).json({ message: "Recipient email is required" });
+  }
+  const subject = `Court Feedback: CASE-${caseId}`;
+  const text = `Court feedback for your case (ID: ${caseId}), assigned on ${dateassigned}:\n\n${feedback}`;
   try {
     const info = await transporter.sendMail({
       from: `"Your App" <${process.env.EMAIL_USER}>`,
@@ -37,10 +60,11 @@ app.post("/send-notification", async (req, res) => {
       subject,
       text,
     });
-    res.status(200).json({ message: "Email sent successfully", info });
+    console.log("Nodemailer sent feedback email:", info);
+    res.status(200).json({ message: "Feedback email sent successfully", info });
   } catch (error) {
-    console.error("Error sending email:", error);
-    res.status(500).json({ message: "Error sending email", error });
+    console.error("Error sending feedback email:", error);
+    res.status(500).json({ message: "Error sending feedback email", error });
   }
 });
 
