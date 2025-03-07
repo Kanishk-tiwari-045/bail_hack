@@ -7,7 +7,7 @@ import {
   Shield,
   Edit, // Using the Edit (pencil) icon from lucide-react
 } from "lucide-react";
-import "../assets/css/UserProfile.css";
+import "../assets/css/userprofile.css";
 import { useNavigate } from "react-router-dom";
 
 const supabase = createClient(

@@ -5,7 +5,7 @@ import SignupPage from "./pages/Signup";
 import DashboardPage from "./pages/DashboardPage";
 import CasePage from "./pages/CaseForm";
 import BailPage from "./pages/BailPage";
-import CaseList from "./components/Caselist";
+import CaseList from "./components/CaseList";
 import LegalAidList from "./components/LegalAidList";
 import RequestsList from "./components/CaseRequests";
 import UserProfile from "./pages/UserProfile";
