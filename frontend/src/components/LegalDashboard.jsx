@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const LegalAidDashboard = () => {
   return (
     <div className="dashboard">
-      <h1 style={{color: "#34d399"}}>Legal Aid Provider Dashboard</h1>
+      <h1 style={{ color: "#4A90E2" }}>Legal Aid Provider Dashboard</h1>
       <div className="dashboard-sections">
         <div className="dashboard-section client-requests">
           <h2>Client Management</h2>

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const Dashboard = () => {
   return (
     <div className="dashboard">
-      <h1 style={{color: "#34d399"}}>Undertrial Prisoner Dashboard</h1>
+      <h1 style={{ color: "#F5A623" }}>Undertrial Prisoner Dashboard</h1>
       <div className="dashboard-sections">
         <div className="dashboard-section document-management">
           <h2>Easy Document Management</h2>
