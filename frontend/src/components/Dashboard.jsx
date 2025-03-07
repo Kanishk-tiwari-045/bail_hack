@@ -6,38 +6,38 @@ import {
   FaGavel,
   FaCalendarAlt,
 } from "react-icons/fa"; // Importing icons from react-icons
-import "../assets/css/dashboard.css"; // Importing the CSS file for styling
+import styles from "../assets/css/dashboard.module.css"; // Importing the CSS module for styling
 
 const Dashboard = () => {
   return (
-    <div className="dashboard">
-      <header className="dashboard-header">
+    <div className={styles.dashboard}>
+      <header className={styles.dashboardHeader}>
         <h1>Undertrial Prisoner Dashboard</h1>
-        <Link to="/family" className="notification-icon">
+        <Link to="/family" className={styles.notificationIcon}>
           <FaBell size={25} />
         </Link>
       </header>
-      <div className="dashboard-sections">
-        <div className="dashboard-section document-management">
+      <div className={styles.dashboardSections}>
+        <div className={styles.dashboardSection}>
           <FaFileAlt size={50} color="#F5A623" />
-          <Link to="/doc-manager" className="dashboard-link">
+          <Link to="/doc-manager" className={styles.dashboardLink}>
             Go to Document Management
           </Link>
         </div>
-        <div className="dashboard-section legal-aid-request">
+        <div className={styles.dashboardSection}>
           <FaGavel size={50} color="#F5A623" />
-          <Link to="/cases" className="dashboard-link">
+          <Link to="/cases" className={styles.dashboardLink}>
             Submit your cases
           </Link>
         </div>
-        <div className="dashboard-section schedule-management">
+        <div className={styles.dashboardSection}>
           <FaCalendarAlt size={50} color="#F5A623" />
-          <Link to="/calendar" className="dashboard-link">
+          <Link to="/calendar" className={styles.dashboardLink}>
             Go to Schedule Management
           </Link>
         </div>
       </div>
-      <Link to="/chatbot" className="chatbot-button">
+      <Link to="/chatbot" className={styles.chatbotButton}>
         <FaRobot size={30} />
         <span>Chatbot</span>
       </Link>

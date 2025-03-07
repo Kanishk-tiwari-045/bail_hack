@@ -1,0 +1,52 @@
+.dashboard {
+  position: relative;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.dashboardHeader {
+  display: flex;
+  justify-content: center; /* Center the header */
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.dashboardHeader h1 {
+  color: #4A90E2;
+}
+
+.dashboardSections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center; /* Center the sections */
+}
+
+.dashboardSection {
+  flex: 1 1 30%;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background-color: #111827;
+}
+
+.dashboardSection h2 {
+  color: #4A90E2;
+}
+
+.dashboardLink {
+  display: block;
+  margin-top: 10px;
+  color: #4A90E2;
+  text-decoration: none;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.dashboardLink:hover {
+  text-decoration: underline;
+}

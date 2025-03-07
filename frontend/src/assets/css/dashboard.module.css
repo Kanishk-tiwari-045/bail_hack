@@ -4,7 +4,7 @@
   font-family: Arial, sans-serif;
 }
 
-.dashboard-header {
+.dashboardHeader {
   display: flex;
   justify-content: center; /* Center the header */
   align-items: center;
@@ -12,25 +12,25 @@
   position: relative; /* Position relative to contain the notification icon */
 }
 
-.dashboard-header h1 {
+.dashboardHeader h1 {
   color: #F5A623;
 }
 
-.notification-icon {
+.notificationIcon {
   position: absolute;
   right: 0; /* Position the notification icon to the right */
   color: #F5A623;
   text-decoration: none;
 }
 
-.dashboard-sections {
+.dashboardSections {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
   justify-content: center; /* Center the sections */
 }
 
-.dashboard-section {
+.dashboardSection {
   flex: 1 1 30%;
   padding: 20px;
   border-radius: 8px;
@@ -42,11 +42,11 @@
   background-color: #111827;
 }
 
-.dashboard-section h2 {
+.dashboardSection h2 {
   color: #F5A623;
 }
 
-.dashboard-link {
+.dashboardLink {
   display: block;
   margin-top: 10px;
   color: #F5A623;
@@ -55,11 +55,11 @@
   font-weight: bold;
 }
 
-.dashboard-link:hover {
+.dashboardLink:hover {
   text-decoration: underline;
 }
 
-.chatbot-button {
+.chatbotButton {
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -74,6 +74,6 @@
   text-decoration: none;
 }
 
-.chatbot-button:hover {
+.chatbotButton:hover {
   background-color: #d18f12;
 }
