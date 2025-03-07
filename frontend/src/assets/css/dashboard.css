@@ -1,0 +1,77 @@
+.dashboard {
+  position: relative;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.dashboard-header h1 {
+  color: #F5A623;
+}
+
+.notification-icon {
+  color: #F5A623;
+  text-decoration: none;
+}
+
+.dashboard-sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.dashboard-section {
+  flex: 1 1 45%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.dashboard-section h2 {
+  color: #F5A623;
+}
+
+.dashboard-section hr {
+  border: 0;
+  height: 1px;
+  background: #F5A623;
+  margin: 10px 0;
+}
+
+.dashboard-link {
+  display: block;
+  margin-top: 10px;
+  color: #F5A623;
+  text-decoration: none;
+}
+
+.dashboard-link:hover {
+  text-decoration: underline;
+}
+
+.chatbot-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #F5A623;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.chatbot-button:hover {
+  background-color: #d18f12;
+}

@@ -1,13 +1,21 @@
+
 import { Link } from "react-router-dom";
+import { FaRobot, FaBell } from "react-icons/fa"; // Importing the chatbot and bell icons from react-icons
+import "../assets/css/dashboard.css"; // Importing the CSS file for styling
 
 const Dashboard = () => {
   return (
     <div className="dashboard">
-      <h1 style={{ color: "#F5A623" }}>Undertrial Prisoner Dashboard</h1>
+      <header className="dashboard-header">
+        <h1>Undertrial Prisoner Dashboard</h1>
+        <Link to="/family" className="notification-icon">
+          <FaBell size={25} />
+        </Link>
+      </header>
       <div className="dashboard-sections">
         <div className="dashboard-section document-management">
           <h2>Easy Document Management</h2>
-          <hr></hr>
+          <hr />
           <p>Manage and upload your documents easily.</p>
           <Link to="/doc-manager" className="dashboard-link">
             Go to Document Management
@@ -15,37 +23,25 @@ const Dashboard = () => {
         </div>
         <div className="dashboard-section legal-aid-request">
           <h2>Submit your cases</h2>
-          <hr></hr>
+          <hr />
           <p>Simple and fast case registration</p>
           <Link to="/cases" className="dashboard-link">
-            Go to Case from submission
-          </Link>
-        </div>
-        <div className="dashboard-section family-notifications">
-          <h2>Family Notifications</h2>
-          <hr></hr>
-          <p>Notify your family about your case status.</p>
-          <Link to="/family" className="dashboard-link">
-            Go to Family Notifications
-          </Link>
-        </div>
-        <div className="dashboard-section ai-chatbot">
-          <h2>AI Chatbot</h2>
-          <hr></hr>
-          <p>Ask your legal questions to our AI chatbot.</p>
-          <Link to="/chatbot" className="dashboard-link">
-            Go to AI Chatbot
+            Go to Case Form Submission
           </Link>
         </div>
         <div className="dashboard-section schedule-management">
           <h2>Working Calendar</h2>
-          <hr></hr>
+          <hr />
           <p>Manage your court schedule and hearings.</p>
-          <Link to="/calender" className="dashboard-link">
+          <Link to="/calendar" className="dashboard-link">
             Go to Schedule Management
           </Link>
         </div>
       </div>
+      <Link to="/chatbot" className="chatbot-button">
+        <FaRobot size={30} />
+        <span>Chatbot</span>
+      </Link>
     </div>
   );
 };
