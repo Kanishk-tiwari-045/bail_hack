@@ -8,6 +8,40 @@
     padding: 2rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
+
+  .judge-feedback-section {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    font-weight: 600;
+    gap: 8px;
+  }
+  
+  .judge-feedback-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #374151;
+    border-radius: 4px;
+    background-color: #111827;
+    color: #e5e7eb;
+    resize: vertical;
+  }
+  
+  .judge-submit-feedback-button {
+    padding: 8px;
+    background-color: #34d399;
+    color: #111827;
+    border: none;
+    font-size: medium;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .judge-submit-feedback-button:hover {
+    background-color: #10b981;
+  }  
   
   /* Header */
   .judge-case-header {
