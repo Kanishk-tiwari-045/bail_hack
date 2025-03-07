@@ -1,32 +1,30 @@
 import { Link } from "react-router-dom";
+import { FaGavel, FaFileAlt, FaCalendarAlt } from "react-icons/fa"; // Importing icons from react-icons
+import styles from "../assets/css/judgedashboard.module.css"; // Importing the CSS module for styling
 
 const JudgeDashboard = () => {
   return (
-    <div className="dashboard">
-      <h1 style={{color: "#34d399"}}>Judge Dashboard</h1>
-      <div className="dashboard-sections">
-        <div className="dashboard-section case-overview">
-          <h2>Case Assignments</h2>
-          <hr></hr>
-          <p>Review cases and make feedbacks.</p>
-          <Link to="/judge-case-list" className="dashboard-link">
-            Go to Case Overview
+    <div className={styles.dashboard}>
+      <header className={styles.dashboardHeader}>
+        <h1>Judge Dashboard</h1>
+      </header>
+      <div className={styles.dashboardSections}>
+        <div className={styles.dashboardSection}>
+          <FaGavel size={50} color="#34d399" />
+          <Link to="/judge-case-list" className={styles.dashboardLink}>
+            Case Assignments
           </Link>
         </div>
-        <div className="dashboard-section legal-reports">
-          <h2>Legal Reports</h2>
-          <hr></hr>
-          <p>Access detailed legal reports and case files.</p>
-          <Link to="/legal-report" className="dashboard-link">
-            Go to Legal Reports
+        <div className={styles.dashboardSection}>
+          <FaFileAlt size={50} color="#34d399" />
+          <Link to="/legal-report" className={styles.dashboardLink}>
+            Legal Reports
           </Link>
         </div>
-        <div className="dashboard-section schedule-management">
-          <h2>Scheduling</h2>
-          <hr></hr>
-          <p>Manage your court schedule and hearings.</p>
-          <Link to="/calender" className="dashboard-link">
-            Go to Schedule Management
+        <div className={styles.dashboardSection}>
+          <FaCalendarAlt size={50} color="#34d399" />
+          <Link to="/calendar" className={styles.dashboardLink}>
+            Scheduling
           </Link>
         </div>
       </div>
