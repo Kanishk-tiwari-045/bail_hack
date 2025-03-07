@@ -1,0 +1,212 @@
+.client-request-page {
+    margin: 0 auto;
+    gap: 2rem; /* Adjust gap between cases as needed */
+    width: 100%;
+    background: #1f2937;
+}
+
+/* Client Container */
+.client-container {
+    background-color: #1f2937;
+    width: 100%;
+    max-width: 800px; /* Added: limits width */
+    margin: 0 auto;   /* Added: centers container horizontally */
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: relative;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+}
+
+  .client-header-parent {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1f2937;
+    text-align: center;
+    grid-column: 1 / -1;
+  }
+
+  .client-header-parent h1{
+    color:#34d399;
+  }
+  
+  .search-input {
+    background-color: white;
+    border-radius: 20px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .search-input svg {
+    color: #1f2937;
+  }
+  
+  .search-input input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    background: transparent;
+  }
+  
+  /* Client List */
+  .client-list {
+    flex: 1;
+    padding: 10px;
+    gap: 1rem;
+    display:flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background-color: #1f2937;
+  }
+  
+  /* Client Card */
+  .client-card {
+    display: flex;
+    padding: 20px 40px;
+    background-color: #111827;
+    border-radius: 15px;
+    transition: background-color 0.3s;
+  }
+  
+  .client-avatar {
+    width: 48px;
+    height: 48px;
+    background-color: #34d399;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  
+  .client-info {
+    flex: 1;
+    min-width: 0; /* Ensures text truncation works */
+  }
+
+  .client-card,
+  .client-card .client-header {
+    transition: transform 0.3s ease;
+  }
+  
+  .client-card:hover,
+  .client-card:hover .client-header {
+    transform: translateY(-5px);
+  }
+    
+  .client-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px; /* Container padding */
+    background: #111827;
+    transition: background-color 0.3s;
+  }
+  
+  .client-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  
+  .client-header .message-time {
+    font-size: 15px;
+    color: #34d399;
+    font-weight: 600;
+  }  
+  
+  .message-preview {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .message-preview p {
+    margin: 0;
+    margin-left: 10px;
+    font-size: 14px;
+    color: #cdcdcd;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .you-prefix {
+    color: #34d399;
+    font-weight: 500;
+  }
+  
+  .unread-badge {
+    background-color: #34d399;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+  }
+  
+  /* Loading and Empty States */
+  .loading-state, .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #6b7280;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .empty-state svg {
+    color: #d1d5db;
+    margin-bottom: 16px;
+  }
+  
+  .empty-state p {
+    margin: 4px 0;
+    font-size: 16px;
+  }
+  
+  .search-note {
+    font-size: 14px;
+    color: #9ca3af;
+  }
+  
+  /* Scrollbar styling */
+  .client-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .client-list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .client-list::-webkit-scrollbar-thumb {
+    background-color: rgba(107, 114, 128, 0.2);
+    border-radius: 3px;
+  }
+  
+  /* Mobile responsiveness */
+  @media (max-width: 600px) {
+    .client-container {
+      height: 100vh;
+      max-width: 100%;
+      border-radius: 0;
+    }
+  }

@@ -1,0 +1,150 @@
+  /* Container for judge cases */
+  .judge-case-container {
+    max-width: 1250px;
+    margin: 0 auto;
+    background-color: #1f2937;
+    border-radius: 8px;
+    min-height: 100vh;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Header */
+  .judge-case-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+  
+  
+  .header-icon {
+    width: 32px;
+    height: 32px;
+    color: #34d399;
+  }
+  
+  .judge-case-header h1 {
+    color: #34d399;
+    font-size: 2rem;
+    margin: 0;
+  }
+  
+  /* Case List Grid */
+  .judge-case-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+  
+  /* Individual Case Card */
+  .judge-case-card {
+    background-color: #222;
+    border-radius: 15px;
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .judge-case-card:hover {
+    transform: scale(1.03);
+  }
+  
+  /* Case Card Header */
+  .judge-case-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 1px solid #444;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  /* Case Information */
+  .judge-case-info h2 {
+    color: #34d399;
+    font-size: 1.5rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  .judge-trial-status-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-left: 0.8rem;
+  }
+  
+  .judge-case-meta {
+    margin-top: 1rem;
+    font-size: medium;
+    color: #bbb;
+  }
+  
+  .judge-case-detail {
+    margin-bottom: 0.8rem;
+  }
+  
+  .judge-case-key {
+    font-weight: bold;
+    color: #34d399;
+  }
+  
+  .judge-case-value {
+    margin-left: 0.25rem;
+  }
+  
+  /* Case Actions */
+  .judge-case-actions {
+    color: #34d399;
+  }
+  
+  /* Trial Date Section */
+  .judge-case-documents {
+    margin-top: 1rem;
+  }
+  
+  .judge-trial-date-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .judge-trial-date-input {
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #34d399;
+    background-color: #111827;
+    color: #34d399;
+  }
+  
+  .judge-input-date-button,
+  .judge-save-date-button {
+    background-color: #34d399;
+    color: #111827;
+    padding: 0.7rem 1rem;
+    border: none;
+    border-radius: 4px;
+    width: 100%;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: medium;
+    transition: background-color 0.3s ease;
+  }
+  
+  .judge-input-date-button:hover,
+  .judge-save-date-button:hover {
+    background-color: #299a71;
+  }
+  
+  /* Loading & Empty States */
+  .judge-loading,
+  .judge-empty-state {
+    text-align: center;
+    color: #bbb;
+    padding: 2rem;
+  }
+  

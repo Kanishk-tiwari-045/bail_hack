@@ -1,0 +1,138 @@
+/* requestList.css */
+.requestList-outer {
+    width: 100%;
+    background: #111827;
+  }
+  
+  .requests-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem; /* Adjust gap between cases as needed */
+    width: 100%; /* Full width container */
+    background: #1f2937;
+    margin: 0;
+    padding: 2rem;
+  }
+  
+  .requestlist-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    text-align: center;
+    grid-column: 1 / -1;
+  }
+  
+  .header-icon {
+    width: 32px;
+    height: 32px;
+    color: #34d399;
+  }
+  
+  .requestlist-header h1 {
+    font-size: 2rem;
+    color: #34d399;
+    text-align: center;
+  }
+  
+  .request-card {
+    background: #111827;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.4s;
+  }
+
+  .request-card:hover{
+    transform: scale(1.05);
+  }
+  
+  .request-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .request-info h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #34d399;
+  }
+  
+  .request-info p {
+    margin: 0;
+    font-size: 1rem;
+    color: #34d399;
+  }
+
+.request-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+  .case-details p {
+    margin: 0;
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+    color: #8fd3bd;
+  }
+  
+  .request-icon {
+    width: 24px;
+    height: 24px;
+    color: #34d399;
+  }
+  
+  .request-actions {
+    display: flex;
+    gap: 1rem; /* Creates horizontal space between buttons */
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+
+  .accept-btn {
+    background-color: #28b984;
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: medium;
+    font-weight: 600;
+    align-self: flex-end;
+    width:50%;
+    transition: background-color 0.3s ease;
+  }
+  
+  .accept-btn:hover {
+    background-color: #1b8760;
+  }
+
+  .decline-btn {
+    background-color: #f63b48;
+    color: white;
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: medium;
+    font-weight: 600;
+    align-self: flex-end;
+    width: 50%;
+    transition: background-color 0.3s ease;
+  }
+  
+  .decline-btn:hover {
+    background-color: #af2132;
+  }
+  
+  .no-requests {
+    text-align: center;
+    font-size: 1.2rem;
+    color:#4b5563;
+    margin-top: 2rem;
+  }
+  

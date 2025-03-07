@@ -1,0 +1,381 @@
+/* Family Notification Page */
+.family-notification-page {
+    background-color: #1f2937;
+    animation: fadeIn 0.5s ease-out;
+  }
+  /* Notification Page Container */
+  .notification-page-container {
+    background: linear-gradient(180deg, #1f2937, #2f3e53);
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 150vh;
+    overflow: hidden;
+    /* position: relative; */
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Notification Page Header */
+  .notification-page-header {
+    background-color: #34d399;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .back-arrow {
+    cursor: pointer;
+  }
+  
+  .notification-page-header h1 {
+    margin: 0;
+    font-size: 20px;
+    color:#111827;
+    font-weight: 600;
+  }
+  
+  /* Notification Page Content */
+  .notification-page-content {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  @media (min-width: 768px) {
+    .notification-page-content {
+      flex-direction: row;
+    }
+    
+    .achievements-section {
+      flex: 1;
+    }
+    
+    .notification-component {
+      flex: 1;
+    }
+  }
+  
+  /* Achievements Section */
+  .achievements-section {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .achievements-section h2 {
+    margin: 0 0 16px 0;
+    color: #34d399;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .achievements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .achievement-item {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .achievement-item:hover {
+    border-color: #34d399;
+    transform: translateY(-2px);
+  }
+  
+  .achievement-item.selected {
+    border-color: #34d399;
+    background-color: #ecfdf5;
+    box-shadow: 0 2px 4px rgba(52, 211, 153, 0.2);
+  }
+  
+  .achievement-item h3 {
+    margin: 0 0 8px 0;
+    color: #1f2937;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  
+  .achievement-item p {
+    margin: 0;
+    color: #4b5563;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  /* Family Notification Container */
+  .family-notification-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  
+  /* Notification Header (within container) */
+  .notification-header {
+    background-color: #34d399;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+  }
+  
+  .notification-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+  }
+  
+  /* Email Collection Section */
+  .email-collection-section {
+    padding: 20px;
+  }
+  
+  .section-description {
+    color: #34d399;
+    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  
+  .email-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .familyinput-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .familyinput-group input {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: border-color 0.2s;
+  }
+  
+  .familyinput-group input:focus {
+    outline: none;
+    border-color: #34d399;
+    box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.2);
+  }
+  
+  .error-message {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #ef4444;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  
+ /* Edited .submit-button styles */
+.submit-button {
+    background-color: #34d399;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px; /* Slightly narrower horizontally */
+    font-size: medium;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .submit-button:hover {
+    background-color: #299a71;
+  }
+  
+  .submit-button:active {
+    transform: scale(0.96); /* Pop in effect on click */
+  }
+  
+  .submit-button:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+  }
+  
+  /* Notification Section */
+  .notification-section {
+    padding: 20px;
+  }
+  
+  .email-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    background-color: #111827;
+    padding: 10px 12px;
+    border-radius: 12px;
+    box-shadow: 0 8px 6px rgba(0, 0, 0, 0.6); /* Added strong box shadow */
+  }
+  
+  
+  .email-display .label {
+    font-weight: 600;
+    color: #34d399;
+    font-size: 16px;
+  }
+  
+  .email-display .email {
+    color: #34d399;
+    font-weight: 500;
+    flex: 1;
+  }
+  
+  .change-email-btn {
+    background: #34d399;
+    border-radius: 10px;
+    color: #1f2937;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 10px;
+    transition: background-color 0.3s;
+  }
+  
+  .change-email-btn:hover {
+    background-color: #b7c2fa;
+  }
+  
+  /* Success Message */
+  .success-message {
+    display: flex;
+    align-items: center;
+    margin-top: 12px;
+    gap: 8px;
+    background-color: #d1fae5;
+    color: #065f46;
+    padding: 10px 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+  
+  /* Notification History */
+  .notification-history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #9a9a9a;
+    margin-bottom: 16px;
+  }
+  
+  .notification-history-header h3 {
+    margin: 0;
+    color:#34d399;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .notification-history {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 400px;
+  }
+  
+  /* Notification Card */
+  .notification-card {
+    background-color: #111827;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    transition: transform 0.3s;
+  }
+  
+  .notification-card:hover {
+    transform: scale(1.02);
+  }
+  
+  .notification-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+  
+  .notification-card-header h4 {
+    margin: 0;
+    color: #34d399;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  
+  .notification-date {
+    font-size: 12px;
+    color: #cdcdcd;
+    white-space: nowrap;
+  }
+  
+  .notification-description {
+    margin: 0 0 12px 0;
+    color: #cdcdcd;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .notification-footer {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .notification-status {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #10b981;
+  }
+  
+  /* Loading and Empty States */
+  .loading-state, .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    color: #6b7280;
+    text-align: center;
+  }
+  
+  .empty-state svg {
+    color: #d1d5db;
+    margin-bottom: 12px;
+  }
+  
+  .empty-state p {
+    margin: 0;
+    font-size: 15px;
+  }
+  
