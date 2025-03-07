@@ -6,9 +6,10 @@
 
 .dashboard-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* Center the header */
   align-items: center;
   margin-bottom: 20px;
+  position: relative; /* Position relative to contain the notification icon */
 }
 
 .dashboard-header h1 {
@@ -16,6 +17,8 @@
 }
 
 .notification-icon {
+  position: absolute;
+  right: 0; /* Position the notification icon to the right */
   color: #F5A623;
   text-decoration: none;
 }
@@ -24,26 +27,23 @@
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  justify-content: center; /* Center the sections */
 }
 
 .dashboard-section {
-  flex: 1 1 45%;
+  flex: 1 1 30%;
   padding: 20px;
-  border: 1px solid #ccc;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background-color: #111827;
 }
 
 .dashboard-section h2 {
   color: #F5A623;
-}
-
-.dashboard-section hr {
-  border: 0;
-  height: 1px;
-  background: #F5A623;
-  margin: 10px 0;
 }
 
 .dashboard-link {
@@ -51,6 +51,8 @@
   margin-top: 10px;
   color: #F5A623;
   text-decoration: none;
+  font-size: 1.2em;
+  font-weight: bold;
 }
 
 .dashboard-link:hover {

@@ -1,5 +1,5 @@
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   margin: 0;
   padding: 0;
   background-color: #f7f8fa;
@@ -103,24 +103,4 @@ p {
 
 .dashboard-link:hover {
   background-color: #333333e9;
-}
-
-.bail-evaluation {
-  border-top: 5px solid #3498db;
-}
-
-.document-management {
-  border-top: 5px solid #e74c3c;
-}
-
-.legal-aid-request {
-  border-top: 5px solid #f39c12;
-}
-
-.family-notifications {
-  border-top: 5px solid #9b59b6;
-}
-
-.ai-chatbot {
-  border-top: 5px solid #2ecc71;
 }
