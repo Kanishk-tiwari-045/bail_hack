@@ -38,7 +38,7 @@ const Dashboard = () => {
         </div>
         <div className={styles.dashboardSection}>
           <FaFileAlt size={50} color="#F5A623" />
-          <Link to="/resource-center" className={styles.dashboardLink}>
+          <Link to="/resource" className={styles.dashboardLink}>
             Go to Resource Center
           </Link>
         </div>
