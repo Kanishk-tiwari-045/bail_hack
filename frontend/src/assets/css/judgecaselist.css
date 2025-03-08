@@ -1,65 +1,234 @@
-  /* Container for judge cases */
-  .judge-case-container {
-    max-width: 1250px;
-    margin: 0 auto;
-    background-color: #1f2937;
-    border-radius: 8px;
-    min-height: 100vh;
-    padding: 2rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  }
-
-  .judge-feedback-section {
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    font-weight: 600;
-    gap: 8px;
-  }
-  
-  .judge-feedback-input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #374151;
-    border-radius: 4px;
-    background-color: #111827;
-    color: #e5e7eb;
-    resize: vertical;
-  }
-  
-  .judge-submit-feedback-button {
-    padding: 8px;
-    background-color: #34d399;
-    color: #111827;
-    border: none;
-    font-size: medium;
-    font-weight: 600;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .judge-submit-feedback-button:hover {
-    background-color: #10b981;
-  }  
-  
-  /* Fetch Similar Cases Button */
-.judge-fetch-similar-button {
-  padding: 8px 12px;
-  background-color: #F5A623;
-  color: #111827;
-  border: none;
-  font-size: 1rem;
-  width:100%;
-  font-weight: 600;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  margin-top: 8px;
+/* Base Styles */
+.judge-case-page {
+  background-color: #111827;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
 }
 
-.judge-fetch-similar-button:hover {
-  background-color: #e08e1a;
+/* Container */
+.judge-case-container {
+  max-width: 1250px;
+  margin: 0 auto;
+  background-color: #1f2937;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Header */
+.judge-case-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.header-icon {
+  width: 32px;
+  height: 32px;
+  color: #34d399;
+}
+
+.judge-case-header h1 {
+  color: #34d399;
+  font-size: 2rem;
+  margin: 0;
+}
+
+/* Case List */
+.judge-case-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+/* Case Card */
+.judge-case-card {
+  background-color: #222;
+  border-radius: 15px;
+  padding: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.judge-case-card:hover {
+  transform: scale(1.03);
+}
+
+.judge-case-card-header {
+  cursor: pointer;
+  border-bottom: 1px solid #444;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.judge-case-info h2 {
+  color: #34d399;
+  font-size: 1.5rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.judge-trial-status-indicator {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-left: 0.8rem;
+}
+
+.judge-case-meta {
+  color: #bbb;
+  font-size: 0.95rem;
+}
+
+.judge-case-section {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background-color: #2d3748;
+  border-radius: 4px;
+}
+
+.judge-case-section h3 {
+  font-size: 1rem;
+  color: #34d399;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.judge-case-detail {
+  margin-bottom: 0.8rem;
+}
+
+.judge-case-key {
+  font-weight: bold;
+  color: #34d399;
+}
+
+.judge-case-value {
+  margin-left: 0.25rem;
+}
+
+.judge-case-description {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Trial Date Section */
+.judge-case-documents {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #2d3748;
+  border-radius: 4px;
+}
+
+.judge-trial-date-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.judge-trial-date-display {
+  color: #e5e7eb;
+  margin: 0;
+}
+
+.judge-trial-date-input {
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #34d399;
+  background-color: #111827;
+  color: #e5e7eb;
+  width: 100%;
+}
+
+.judge-input-date-button,
+.judge-save-date-button {
+  background-color: #34d399;
+  color: #111827;
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: 4px;
+  width: 100%;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: medium;
+  transition: background-color 0.3s ease;
+}
+
+.judge-input-date-button:hover:not(:disabled),
+.judge-save-date-button:hover:not(:disabled) {
+  background-color: #10b981;
+}
+
+.judge-save-date-button:disabled,
+.judge-submit-feedback-button:disabled,
+.judge-fetch-similar-button:disabled {
+  background-color: #4b5563;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Feedback Section */
+.judge-feedback-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.judge-feedback-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #374151;
+  border-radius: 4px;
+  background-color: #111827;
+  color: #e5e7eb;
+  min-height: 100px;
+  resize: vertical;
+}
+
+.judge-submit-feedback-button {
+  padding: 0.7rem;
+  background-color: #34d399;
+  color: #111827;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.judge-submit-feedback-button:hover:not(:disabled) {
+  background-color: #10b981;
+}
+
+/* Fetch Similar Cases Button */
+.judge-fetch-similar-button {
+  padding: 0.5rem 1rem;
+  background-color: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.judge-fetch-similar-button:hover:not(:disabled) {
+  background-color: #4f46e5;
   transform: translateY(-2px);
 }
 
@@ -80,10 +249,10 @@
 .similar-cases-modal {
   background-color: #111827;
   color: #e5e7eb;
-  padding: 20px;
+  padding: 1.5rem;
   border-radius: 8px;
-  max-width: 600px;
-  width: 90%;
+  max-width: 90%;
+  width: 1000px;
   max-height: 80vh;
   overflow-y: auto;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
@@ -93,158 +262,70 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 1rem;
 }
 
 .similar-cases-modal-header h3 {
   margin: 0;
   font-size: 1.2rem;
+  color: #6366f1;
 }
 
 .similar-cases-modal-close {
   background: none;
   border: none;
   color: #e5e7eb;
-  font-size: 1.2rem;
   cursor: pointer;
 }
 
-  /* Header */
-  .judge-case-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    justify-content: center;
-    margin-bottom: 2rem;
-  }
-  
-  
-  .header-icon {
-    width: 32px;
-    height: 32px;
-    color: #34d399;
-  }
-  
-  .judge-case-header h1 {
-    color: #34d399;
-    font-size: 2rem;
-    margin: 0;
-  }
-  
-  /* Case List Grid */
+.similar-cases-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #e5e7eb;
+}
+
+.similar-cases-table th,
+.similar-cases-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #374151;
+  text-align: left;
+}
+
+.similar-cases-table th {
+  background-color: #6366f1;
+  color: #fff;
+}
+
+.similar-cases-table tr:hover {
+  background-color: #2d3748;
+}
+
+/* Loading & Empty States */
+.judge-loading,
+.judge-empty-state {
+  text-align: center;
+  color: #bbb;
+  padding: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
   .judge-case-list {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
+    grid-template-columns: 1fr;
   }
-  
-  /* Individual Case Card */
-  .judge-case-card {
-    background-color: #222;
-    border-radius: 15px;
-    padding: 1.5rem;
-    transition: transform 0.3s ease;
-  }
-  
-  .judge-case-card:hover {
-    transform: scale(1.03);
-  }
-  
-  /* Case Card Header */
-  .judge-case-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    border-bottom: 1px solid #444;
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
-  }
-  
-  /* Case Information */
-  .judge-case-info h2 {
-    color: #34d399;
-    font-size: 1.5rem;
-    margin: 0;
-    display: flex;
-    align-items: center;
-  }
-  
-  .judge-trial-status-indicator {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin-left: 0.8rem;
-  }
-  
-  .judge-case-meta {
-    margin-top: 1rem;
-    font-size: medium;
-    color: #bbb;
-  }
-  
-  .judge-case-detail {
-    margin-bottom: 0.8rem;
-  }
-  
-  .judge-case-key {
-    font-weight: bold;
-    color: #34d399;
-  }
-  
-  .judge-case-value {
-    margin-left: 0.25rem;
-  }
-  
-  /* Case Actions */
-  .judge-case-actions {
-    color: #34d399;
-  }
-  
-  /* Trial Date Section */
-  .judge-case-documents {
-    margin-top: 1rem;
-  }
-  
   .judge-trial-date-section {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
   }
-  
-  .judge-trial-date-input {
-    padding: 0.5rem;
-    border-radius: 4px;
-    border: 1px solid #34d399;
-    background-color: #111827;
-    color: #34d399;
+  .judge-case-description {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .judge-input-date-button,
-  .judge-save-date-button {
-    background-color: #34d399;
-    color: #111827;
-    padding: 0.7rem 1rem;
-    border: none;
-    border-radius: 4px;
+  .judge-fetch-similar-button {
     width: 100%;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: medium;
-    transition: background-color 0.3s ease;
+    margin-left: 0;
   }
-  
-  .judge-input-date-button:hover,
-  .judge-save-date-button:hover {
-    background-color: #299a71;
+  .similar-cases-modal {
+    width: 90%;
   }
-  
-  /* Loading & Empty States */
-  .judge-loading,
-  .judge-empty-state {
-    text-align: center;
-    color: #bbb;
-    padding: 2rem;
-  }
-  
+}
