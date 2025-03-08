@@ -21,7 +21,7 @@ const CasePage = () => {
     severity: "",
     criminalHistory: "",
     victimImpact: "",
-    publicInterest: "",
+    sections: "",
     custodyTime: "",
     adjournments: "",
     bailAmount: "",
@@ -77,7 +77,7 @@ const CasePage = () => {
           severity: formData.severity,
           criminalHistory: formData.criminalHistory,
           victimImpact: formData.victimImpact,
-          publicInterest: formData.publicInterest,
+          sections: formData.sections,
           custodyTime: formData.custodyTime,
           adjournments: formData.adjournments,
           bailAmount: formData.bailAmount,
@@ -103,7 +103,7 @@ const CasePage = () => {
           severity: "",
           criminalHistory: "",
           victimImpact: "",
-          publicInterest: "",
+          sections: "",
           custodyTime: "",
           adjournments: "",
           bailAmount: "",
@@ -285,14 +285,14 @@ const CasePage = () => {
                 ></textarea>
               </div>
               <div className="form-group">
-                <label htmlFor="publicInterest">Public Interest Considerations</label>
+                <label htmlFor="sections">Sections Mapped</label>
                 <textarea
-                  id="publicInterest"
-                  name="publicInterest"
-                  value={formData.publicInterest}
+                  id="sections"
+                  name="sections"
+                  value={formData.sections}
                   onChange={handleChange}
                   rows={3}
-                  placeholder="Describe any public interest considerations..."
+                  placeholder="Write down the sections mapped"
                   style={{ fontWeight: 550, fontSize: 14.5, color: "rgb(75, 77, 77)" }}
                 ></textarea>
               </div>
