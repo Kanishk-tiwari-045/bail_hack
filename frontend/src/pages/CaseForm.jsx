@@ -287,7 +287,7 @@ const CasePage = () => {
               <div className="form-group">
                 <label htmlFor="sections">Sections Mapped</label>
                 <textarea
-                  id="sectionsInterest"
+                  id="sections"
                   name="sections"
                   value={formData.sections}
                   onChange={handleChange}
