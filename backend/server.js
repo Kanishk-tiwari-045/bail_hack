@@ -15,6 +15,53 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SER
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+const generationConfig = {
+  temperature: 1,
+  topP: 0.95,
+  topK: 40,
+  maxOutputTokens: 8192,
+  responseMimeType: "text/plain",
+};
+
+app.post("/legal-query", async (req, res) => {
+  try {
+    const { question } = req.body;
+    if (!question) {
+      return res.status(400).json({ error: "Question is required." });
+    }
+    const prompt = `You are Nyaya Mitra ChatBot, a highly knowledgeable legal AI assistant specializing in Indian law.
+- Respond strictly in **valid JSON format** without any extra text.
+- Your response must be in **plain text** with **no special characters, markdown, or bullet points**.
+- Ensure **Nyaya Mitra ChatBot** is naturally mentioned in the response.
+
+JSON FORMAT:
+{
+  "Question": "${question}",
+  "Answer": "Provide a structured and legally accurate response in simple text format. No special symbols, no asterisks, no markdown."
+}`;
+
+    const chatSession = model.startChat({ generationConfig });
+    const result = await chatSession.sendMessage(prompt);
+    let responseText = result.response.text().trim();
+    console.log("Full Gemini API response text:", responseText);
+    let jsonResponse;
+    try {
+      jsonResponse = JSON.parse(responseText);
+    } catch (err) {
+      console.warn("AI returned unstructured response, attempting cleanup...");
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        jsonResponse = JSON.parse(jsonMatch[0]);
+      } else {
+        throw new Error("AI did not return valid JSON.");
+      }
+    }
+    res.json(jsonResponse);
+  } catch (error) {
+    console.error("Error processing legal query:", error);
+    res.status(500).json({ error: "Failed to process legal query." });
+  }
+});
 
 app.post("/send-feedback", async (req, res) => {
   const { toEmail, caseId, feedback, dateassigned } = req.body;
