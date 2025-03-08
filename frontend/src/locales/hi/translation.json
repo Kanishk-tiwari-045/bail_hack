@@ -1,0 +1,55 @@
+{
+    "welcome": "स्वागत है",
+    "login": {
+      "header": "वापसी पर आपका स्वागत है",
+      "subHeader": "कृपया अपने खाते में साइन इन करें",
+      "emailPlaceholder": "आपका@example.com",
+      "passwordPlaceholder": "••••••••",
+      "loginButton": "लॉग इन करें"
+    },
+    "dashboard": {
+        "title": "अंडरट्रायल कैदी डैशबोर्ड",
+        "documentManagement": "दस्तावेज़ प्रबंधन पर जाएँ",
+        "caseSubmission": "अपनी केस जमा करें",
+        "resourceCenter": "संसाधन केंद्र पर जाएँ",
+        "caseTimeline": "अपनी केस टाइमलाइन देखें",
+        "chatbot": "चैटबोट",
+        "notifications": "सूचनाएं",
+        "calendar": "कैलेंडर"
+    },
+    "userprofile": {
+      "Loading profile...": "प्रोफ़ाइल लोड हो रही है...",
+      "No profile data found.": "कोई प्रोफ़ाइल डेटा नहीं मिला।",
+      "Personal Information": "व्यक्तिगत जानकारी",
+      "Email": "ईमेल",
+      "Phone": "फ़ोन",
+      "Address": "पता",
+      "Professional Details": "पेशेवर विवरण",
+      "Specialization": "विशेषज्ञता",
+      "Member Since": "सदस्यता से",
+      "Bar Council ID": "बार काउंसिल आईडी",
+      "Cases": "केस",
+      "Experience": "अनुभव",
+      "Save Profile": "प्रोफ़ाइल सहेजें",
+      "Logout": "लॉग आउट",
+      "Failed to save profile.": "प्रोफ़ाइल सहेजने में विफल।"
+    },
+      "resource": {
+        "allCategories": "सभी श्रेणियाँ",
+        "cyberCrimes": "साइबर अपराध",
+        "crimesSCST": "एससी/एसटी समुदायों के खिलाफ अपराध",
+        "crimesWomen": "महिलाओं के खिलाफ अपराध",
+        "crimesChildren": "बच्चों के खिलाफ अपराध",
+        "economicOffenses": "आर्थिक अपराध",
+        "centerTitle": "कानूनी संसाधन केंद्र",
+        "searchPlaceholder": "खंड, शीर्षक, या विवरण खोजें...",
+        "loading": "कानूनी संसाधन लोड हो रहे हैं...",
+        "noResources": "आपकी खोज से मेल खाते कोई संसाधन नहीं मिले",
+        "resetSearch": "खोज रीसेट करें",
+        "ipcTitle": "भारतीय दंड संहिता",
+        "crpcTitle": "आपराधिक प्रक्रिया संहिता",
+        "bnsTitle": "जमानत और गारंटी जानकारी",
+        "fetchError": "संसाधन प्राप्त करते समय त्रुटि:"
+        }
+    }
+  
