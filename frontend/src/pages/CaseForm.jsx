@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { FileText, Send } from "lucide-react"; 
 import "../assets/css/casepage.css";
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
 // Initialize Supabase client with credentials from .env
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -10,6 +11,7 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const CasePage = () => {
+  // Only include the fields needed for user input.
   const [activeSection, setActiveSection] = useState(1);
   const [formData, setFormData] = useState({
     caseDescription: "",
@@ -19,15 +21,12 @@ const CasePage = () => {
     employment: "",
     offenseNature: "",
     severity: "",
-    criminalHistory: "",
     victimImpact: "",
     sections: "",
-    custodyTime: "",
-    adjournments: "",
-    bailAmount: "",
-    bailConditions: "",
     judgeAssigned: ""
   });
+  
+  const navigate = useNavigate();
 
   const nextSection = () => {
     setActiveSection((prev) => Math.min(prev + 1, 3));
@@ -50,22 +49,36 @@ const CasePage = () => {
 
     // Get the email from localStorage
     const email = localStorage.getItem('userEmail');
-
-    // Check if email exists
     if (!email) {
       console.error("User email not found in localStorage.");
       return;
     }
-
     // Check if all fields are filled
     const allFieldsFilled = Object.values(formData).every((field) => field !== "");
     if (!allFieldsFilled) {
       alert("Please fill all fields before submitting.");
       return;
     }
-
-    // Submit to Supabase
+    
     try {
+      // 1. Check for existing cases submitted by this user
+      const { data: existingCases, error: existingError } = await supabase
+        .from("cases")
+        .select("id")
+        .eq("submitted_by", email);
+      if (existingError) throw existingError;
+      
+      // 2. Compute criminalHistory and pastRecords based on existing cases
+      let criminalHistory, pastRecords;
+      if (existingCases && existingCases.length > 0) {
+        criminalHistory = "repeat offender";
+        pastRecords = existingCases.map((c) => c.id).join(", ");
+      } else {
+        criminalHistory = "first time offender";
+        pastRecords = "";
+      }
+      
+      // 3. Submit the new case to Supabase with computed fields
       const { data, error } = await supabase.from("cases").insert([
         {
           caseDescription: formData.caseDescription,
@@ -75,23 +88,19 @@ const CasePage = () => {
           employmentStatus: formData.employment,
           offenseNature: formData.offenseNature,
           severity: formData.severity,
-          criminalHistory: formData.criminalHistory,
           victimImpact: formData.victimImpact,
           sections: formData.sections,
-          custodyTime: formData.custodyTime,
-          adjournments: formData.adjournments,
-          bailAmount: formData.bailAmount,
-          bailConditions: formData.bailConditions,
-          submitted_by: email, // Add the email to the submission data
-          judgeAssigned: formData.judgeAssigned
+          judgeAssigned: formData.judgeAssigned,
+          submitted_by: email,
+          criminalHistory: criminalHistory,
+          pastRecords: pastRecords,
         },
       ], { returning: "minimal" });
-
+      
       if (error) {
         alert("Error submitting case: " + error.message);
       } else {
         alert("Case submitted successfully!");
-
         // Optionally reset the form after successful submission
         setFormData({
           caseDescription: "",
@@ -101,24 +110,20 @@ const CasePage = () => {
           employment: "",
           offenseNature: "",
           severity: "",
-          criminalHistory: "",
           victimImpact: "",
           sections: "",
-          custodyTime: "",
-          adjournments: "",
-          bailAmount: "",
-          bailConditions: "",
           judgeAssigned: ""
         });
-
-        setActiveSection(1); // Reset to the first section after submission
+        setActiveSection(1);
       }
     } catch (error) {
       alert("Error submitting case: " + error.message);
     }
   };
 
+  // Check if the form is valid (all fields filled)
   const isFormValid = Object.values(formData).every((field) => field !== "");
+
   return (
     <div className="case-page">
       <Navbar />
@@ -136,11 +141,11 @@ const CasePage = () => {
           </div>
           <div className={`progress-step ${activeSection >= 2 ? 'active' : ''}`}>
             <span>2</span>
-            <p>Personal Details</p>
+            <p>Defendant Information</p>
           </div>
           <div className={`progress-step ${activeSection >= 3 ? 'active' : ''}`}>
             <span>3</span>
-            <p>Legal Information</p>
+            <p>Legal Proceedings Information</p>
           </div>
         </div>
 
@@ -259,20 +264,6 @@ const CasePage = () => {
                 </select>
               </div>
               <div className="form-group">
-                <label htmlFor="criminalHistory">Criminal History</label>
-                <select
-                  style={{ fontWeight: 550, fontSize: 14.5, color: "rgb(75, 77, 77)" }}
-                  id="criminalHistory"
-                  name="criminalHistory"
-                  value={formData.criminalHistory}
-                  onChange={handleChange}
-                >
-                  <option value="">Select history</option>
-                  <option value="first-time">First-time Offender</option>
-                  <option value="repeat">Repeat Offender</option>
-                </select>
-              </div>
-              <div className="form-group">
                 <label htmlFor="victimImpact">Victim Impact</label>
                 <textarea
                   id="victimImpact"
@@ -297,54 +288,6 @@ const CasePage = () => {
                 ></textarea>
               </div>
               <div className="form-group">
-                <label htmlFor="bailConditions">Bail Conditions</label>
-                <textarea
-                  id="bailConditions"
-                  name="bailConditions"
-                  value={formData.bailConditions}
-                  onChange={handleChange}
-                  rows={3}
-                  placeholder="Enter bail conditions..."
-                  style={{ fontWeight: 550, fontSize: 15, color: "rgb(75, 77, 77)" }}
-                ></textarea>
-              </div>
-              <div className="form-group">
-                <label htmlFor="custodyTime">Custody Time</label>
-                <input
-                  type="text"
-                  id="custodyTime"
-                  name="custodyTime"
-                  value={formData.custodyTime}
-                  onChange={handleChange}
-                  placeholder="Enter custody time..."
-                  style={{ fontWeight: 550, fontSize: 15, color: "rgb(75, 77, 77)" }}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="adjournments">Adjournments</label>
-                <input
-                  type="text"
-                  id="adjournments"
-                  name="adjournments"
-                  value={formData.adjournments}
-                  onChange={handleChange}
-                  placeholder="Enter adjournments..."
-                  style={{ fontWeight: 550, fontSize: 15, color: "rgb(75, 77, 77)" }}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="bailAmount">Bail Amount</label>
-                <input
-                  type="text"
-                  id="bailAmount"
-                  name="bailAmount"
-                  value={formData.bailAmount}
-                  onChange={handleChange}
-                  placeholder="Enter bail amount..."
-                  style={{ fontWeight: 550, fontSize: 15, color: "rgb(75, 77, 77)" }}
-                />
-              </div>
-              <div className="form-group">
                 <label htmlFor="judgeAssigned">Judge Assigned</label>
                 <input
                   type="text"
@@ -360,26 +303,26 @@ const CasePage = () => {
           </div>
 
           <div className="form-navigation">
-          {activeSection > 1 && (
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={prevSection}
-              disabled={activeSection === 1}
-            >
-              Prev
-            </button>
-          )}
+            {activeSection > 1 && (
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={prevSection}
+                disabled={activeSection === 1}
+              >
+                Prev
+              </button>
+            )}
             {activeSection < 3 && (
-            <button
-              type="button"
-              className="btn-primary"
-              onClick={nextSection}
-              disabled={activeSection === 3}
-            >
-              Next
-            </button>
-          )}
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={nextSection}
+                disabled={activeSection === 3}
+              >
+                Next
+              </button>
+            )}
             <button
               type="submit"
               className="btn-primary"
