@@ -9,10 +9,23 @@
   justify-content: center; /* Center the header */
   align-items: center;
   margin-bottom: 20px;
+  position: relative; /* Position relative to contain the notification icon */
 }
 
 .dashboardHeader h1 {
   color: #34d399;
+}
+
+.notifications {
+  position: absolute;
+  right: 0; /* Position the notification icons to the right */
+  display: flex;
+  gap: 15px;
+}
+
+.notificationIcon {
+  color: #34d399;
+  text-decoration: none;
 }
 
 .dashboardSections {

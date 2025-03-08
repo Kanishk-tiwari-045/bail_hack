@@ -7,6 +7,11 @@ const LegalAidDashboard = () => {
     <div className={styles.dashboard}>
       <header className={styles.dashboardHeader}>
         <h1>Legal Aid Provider Dashboard</h1>
+        <div className={styles.notifications}>
+          <Link to="/calendar" className={styles.notificationIcon}>
+            <FaCalendarAlt size={25} />
+          </Link>
+        </div>
       </header>
       <div className={styles.dashboardSections}>
         <div className={styles.dashboardSection}>
@@ -25,12 +30,6 @@ const LegalAidDashboard = () => {
           <FaBook size={50} color="#4A90E2" />
           <Link to="/resource" className={styles.dashboardLink}>
             Resource Center
-          </Link>
-        </div>
-        <div className={styles.dashboardSection}>
-          <FaCalendarAlt size={50} color="#4A90E2" />
-          <Link to="/calendar" className={styles.dashboardLink}>
-            Working Calendar
           </Link>
         </div>
       </div>

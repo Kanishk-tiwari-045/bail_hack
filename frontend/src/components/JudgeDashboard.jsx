@@ -7,6 +7,11 @@ const JudgeDashboard = () => {
     <div className={styles.dashboard}>
       <header className={styles.dashboardHeader}>
         <h1>Judge Dashboard</h1>
+        <div className={styles.notifications}>
+          <Link to="/calendar" className={styles.notificationIcon}>
+            <FaCalendarAlt size={25} />
+          </Link>
+        </div>
       </header>
       <div className={styles.dashboardSections}>
         <div className={styles.dashboardSection}>
@@ -19,12 +24,6 @@ const JudgeDashboard = () => {
           <FaFileAlt size={50} color="#34d399" />
           <Link to="/legal-report" className={styles.dashboardLink}>
             Legal Reports
-          </Link>
-        </div>
-        <div className={styles.dashboardSection}>
-          <FaCalendarAlt size={50} color="#34d399" />
-          <Link to="/calendar" className={styles.dashboardLink}>
-            Scheduling
           </Link>
         </div>
       </div>
