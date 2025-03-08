@@ -23,7 +23,7 @@ const LegalAidDashboard = () => {
         </div>
         <div className={styles.dashboardSection}>
           <FaBook size={50} color="#4A90E2" />
-          <Link to="/resource-center" className={styles.dashboardLink}>
+          <Link to="/resource" className={styles.dashboardLink}>
             Resource Center
           </Link>
         </div>

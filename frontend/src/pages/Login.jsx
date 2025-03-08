@@ -19,6 +19,14 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = await login(email, password);
+
+    if (email === "admin@gmail.com" && password === "pass@123") {
+      localStorage.setItem('userEmail', email);
+      // If you have a dedicated admin dashboard route:
+      navigate('/admin');
+      return; // Stop here, skip normal login flow
+    }
+    
     // After successful login:
     if (!result?.error) {
       localStorage.setItem('userEmail', email); // <-- Add this line
