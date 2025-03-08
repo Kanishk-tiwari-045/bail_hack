@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Scale } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
+// At the top, import LanguageSwitcher
+import LanguageSwitcher from "../pages/Language";
 import "../assets/css/Navbar.css";
 
 // Initialize Supabase client with VITE_ environment variables
@@ -72,6 +74,9 @@ const Navbar = () => {
             </li>
           </ul>
         </nav>
+        <div className="language-switcher">
+        <LanguageSwitcher />
+      </div>
       </div>
     </header>
   );
