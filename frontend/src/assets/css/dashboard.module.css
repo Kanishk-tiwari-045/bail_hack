@@ -60,10 +60,6 @@
   font-weight: bold;
 }
 
-.dashboardLink:hover {
-  text-decoration: underline;
-}
-
 .chatbotButton {
   position: fixed;
   bottom: 20px;

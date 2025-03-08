@@ -36,6 +36,18 @@ const Dashboard = () => {
             Go to Schedule Management
           </Link>
         </div>
+        <div className={styles.dashboardSection}>
+          <FaFileAlt size={50} color="#F5A623" />
+          <Link to="/resource-center" className={styles.dashboardLink}>
+            Go to Resource Center
+          </Link>
+        </div>
+        <div className={styles.dashboardSection}>
+          <FaFileAlt size={50} color="#F5A623" />
+          <Link to="/timeline" className={styles.dashboardLink}>
+            View your Case timeline
+          </Link>
+        </div>
       </div>
       <Link to="/chatbot" className={styles.chatbotButton}>
         <FaRobot size={30} />
