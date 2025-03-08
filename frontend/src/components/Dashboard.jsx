@@ -13,9 +13,14 @@ const Dashboard = () => {
     <div className={styles.dashboard}>
       <header className={styles.dashboardHeader}>
         <h1>Undertrial Prisoner Dashboard</h1>
-        <Link to="/family" className={styles.notificationIcon}>
-          <FaBell size={25} />
-        </Link>
+        <div className={styles.notifications}>
+          <Link to="/family" className={styles.notificationIcon}>
+            <FaBell size={25} />
+          </Link>
+          <Link to="/calendar" className={styles.notificationIcon}>
+            <FaCalendarAlt size={25} />
+          </Link>
+        </div>
       </header>
       <div className={styles.dashboardSections}>
         <div className={styles.dashboardSection}>
@@ -30,12 +35,7 @@ const Dashboard = () => {
             Submit your cases
           </Link>
         </div>
-        <div className={styles.dashboardSection}>
-          <FaCalendarAlt size={50} color="#F5A623" />
-          <Link to="/calendar" className={styles.dashboardLink}>
-            Go to Schedule Management
-          </Link>
-        </div>
+
         <div className={styles.dashboardSection}>
           <FaFileAlt size={50} color="#F5A623" />
           <Link to="/resource" className={styles.dashboardLink}>

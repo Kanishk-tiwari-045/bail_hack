@@ -9,16 +9,21 @@
   justify-content: center; /* Center the header */
   align-items: center;
   margin-bottom: 20px;
-  position: relative; /* Position relative to contain the notification icon */
+  position: relative; /* Position relative to contain the notification icons */
 }
 
 .dashboardHeader h1 {
   color: #F5A623;
 }
 
-.notificationIcon {
+.notifications {
   position: absolute;
-  right: 0; /* Position the notification icon to the right */
+  right: 0; /* Position the notification icons to the right */
+  display: flex;
+  gap: 15px;
+}
+
+.notificationIcon {
   color: #F5A623;
   text-decoration: none;
 }
