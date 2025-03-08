@@ -212,6 +212,52 @@ app.post("/find-similar-cases", async (req, res) => {
   }
 });
 
+app.post("/analyze-bail", async (req, res) => {
+  try {
+    const { caseDescription, sections } = req.body;
+    if (!caseDescription || !sections || !Array.isArray(sections)) {
+      return res.status(400).json({ error: "Invalid input format" });
+    }
+
+    const chatSession = model.startChat({
+      generationConfig,
+      history: [],
+    });
+
+    const prompt = `
+      Analyze the following legal case and determine if bail should be granted. Consider factors like legal precedents, severity of the offense, the nature of the crime (bailable or non-bailable), the accused’s past record, flight risk, and potential harm to society. 
+      
+      **Case Description:** ${caseDescription}
+      **Sections:** ${sections.join(", ")}
+      
+      Provide the response strictly in this JSON format:
+      {
+        "conclusion": {
+          "bailDecision": "granted/denied",
+          "reasoning": "Concise, well-structured, and legally sound reasoning."
+        }
+      }
+    `;
+
+    const result = await chatSession.sendMessage(prompt);
+    const responseText =
+      result.response.candidates[0]?.content?.parts[0]?.text || "";
+
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error("Invalid JSON response from AI");
+    }
+
+    const jsonResponse = JSON.parse(jsonMatch[0]);
+    res.json(jsonResponse);
+  } catch (error) {
+    console.error("Error:", error.message);
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", details: error.message });
+  }
+});
+
 // Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
