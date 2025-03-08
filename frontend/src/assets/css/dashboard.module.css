@@ -1,7 +1,7 @@
 .dashboard {
   position: relative;
   padding: 20px;
-  font-family: Arial, sans-serif;
+  /* font-family: Arial, sans-serif; */
 }
 
 .dashboardHeader {
@@ -30,7 +30,7 @@
 
 .dashboardSections {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
   gap: 20px;
   justify-content: center; /* Center the sections */
 }
