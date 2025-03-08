@@ -1,21 +1,23 @@
-import React from "react";
 import { Link } from "react-router-dom";
-import { FaRobot, FaBell, FaFileAlt, FaGavel, FaCalendarAlt } from "react-icons/fa";
-import { useTranslation } from "react-i18next";
-import styles from "../assets/css/dashboard.module.css";
+import {
+  FaRobot,
+  FaBell,
+  FaFileAlt,
+  FaGavel,
+  FaCalendarAlt,
+} from "react-icons/fa"; // Importing icons from react-icons
+import styles from "../assets/css/dashboard.module.css"; // Importing the CSS module for styling
 
 const Dashboard = () => {
-  const { t } = useTranslation();
-
   return (
     <div className={styles.dashboard}>
       <header className={styles.dashboardHeader}>
-        <h1>{t("dashboard.title")}</h1>
+        <h1>Undertrial Prisoner Dashboard</h1>
         <div className={styles.notifications}>
-          <Link to="/family" className={styles.notificationIcon} title={t("dashboard.notifications")}>
+          <Link to="/family" className={styles.notificationIcon}>
             <FaBell size={25} />
           </Link>
-          <Link to="/calendar" className={styles.notificationIcon} title={t("dashboard.calendar")}>
+          <Link to="/calendar" className={styles.notificationIcon}>
             <FaCalendarAlt size={25} />
           </Link>
         </div>
@@ -24,31 +26,32 @@ const Dashboard = () => {
         <div className={styles.dashboardSection}>
           <FaFileAlt size={50} color="#F5A623" />
           <Link to="/doc-manager" className={styles.dashboardLink}>
-            {t("dashboard.documentManagement")}
+            Go to Document Management
           </Link>
         </div>
         <div className={styles.dashboardSection}>
           <FaGavel size={50} color="#F5A623" />
           <Link to="/cases" className={styles.dashboardLink}>
-            {t("dashboard.caseSubmission")}
+            Submit your cases
           </Link>
         </div>
+
         <div className={styles.dashboardSection}>
           <FaFileAlt size={50} color="#F5A623" />
           <Link to="/resource" className={styles.dashboardLink}>
-            {t("dashboard.resourceCenter")}
+            Go to Resource Center
           </Link>
         </div>
         <div className={styles.dashboardSection}>
           <FaFileAlt size={50} color="#F5A623" />
           <Link to="/timeline" className={styles.dashboardLink}>
-            {t("dashboard.caseTimeline")}
+            View your Case timeline
           </Link>
         </div>
       </div>
       <Link to="/chatbot" className={styles.chatbotButton}>
         <FaRobot size={30} />
-        <span>{t("dashboard.chatbot")}</span>
+        <span>Chatbot</span>
       </Link>
     </div>
   );
