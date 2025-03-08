@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { 
+import Navbar from "../components/Navbar";
+import {
   User,
   Settings,
   Shield,
-  Edit // Using the Edit (pencil) icon from lucide-react
+  Edit, // Using the Edit (pencil) icon from lucide-react
 } from "lucide-react";
 import "../assets/css/userprofile.css";
-import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -17,7 +16,6 @@ const supabase = createClient(
 );
 
 const UserProfile = () => {
-  const { t } = useTranslation();
   const [profile, setProfile] = useState(null);
   const [editedProfile, setEditedProfile] = useState(null);
   const [editFields, setEditFields] = useState({
@@ -77,10 +75,10 @@ const UserProfile = () => {
         phone: false,
         barCouncilId: false,
       });
-      alert(t("userprofile.Save Profile"));
+      alert("Profile saved successfully!");
     } catch (err) {
       console.error("Error saving profile:", err);
-      alert(t("userprofile.Failed to save profile."));
+      alert("Failed to save profile.");
     }
   };
 
@@ -90,11 +88,11 @@ const UserProfile = () => {
   };
 
   if (loading) {
-    return <div>{t("userprofile.Loading profile...")}</div>;
+    return <div>Loading profile...</div>;
   }
 
   if (!profile) {
-    return <div>{t("userprofile.No profile data found.")}</div>;
+    return <div>No profile data found.</div>;
   }
 
   const joinedDate = profile.created_at
@@ -132,11 +130,11 @@ const UserProfile = () => {
             <div className="profile-stats">
               <div className="stat-item">
                 <strong>{userCases}</strong>
-                <span>{t("userprofile.Cases")}</span>
+                <span>Cases</span>
               </div>
               <div className="stat-item">
                 <strong>{userExperience}</strong>
-                <span>{t("userprofile.Experience")}</span>
+                <span>Experience</span>
               </div>
             </div>
           </div>
@@ -146,13 +144,13 @@ const UserProfile = () => {
           <div className="profile-section">
             <h2>
               <Settings className="section-icon" />
-              {t("userprofile.Personal Information")}
+              Personal Information
             </h2>
             <div className="info-grid">
               {/* Email */}
               <div className="info-item">
                 <div className="info-text">
-                  <label>{t("userprofile.Email")}</label>
+                  <label>Email</label>
                   {editFields.email ? (
                     <input
                       type="text"
@@ -169,7 +167,7 @@ const UserProfile = () => {
               {/* Phone */}
               <div className="info-item">
                 <div className="info-text">
-                  <label>{t("userprofile.Phone")}</label>
+                  <label>Phone</label>
                   {editFields.phone ? (
                     <input
                       type="text"
@@ -190,7 +188,7 @@ const UserProfile = () => {
               {/* Address */}
               <div className="info-item full-width">
                 <div className="info-text">
-                  <label>{t("userprofile.Address")}</label>
+                  <label>Address</label>
                   {editFields.address ? (
                     <input
                       type="text"
@@ -210,74 +208,74 @@ const UserProfile = () => {
               </div>
             </div>
           </div>
-
+          
           {userRole.toLowerCase() !== "under trial prisoner" && (
-            <div className="profile-section">
-              <h2>
-                <Shield className="section-icon" />
-                {t("userprofile.Professional Details")}
-              </h2>
-              <div className="info-grid">
-                {/* Specialization */}
-                <div className="info-item full-width">
-                  <div className="info-text">
-                    <label>{t("userprofile.Specialization")}</label>
-                    {editFields.specialization ? (
-                      <input
-                        type="text"
-                        value={editedProfile.specialization}
-                        onChange={(e) =>
-                          handleInputChange("specialization", e.target.value)
-                        }
-                      />
-                    ) : (
-                      <p>{userSpecialization}</p>
-                    )}
-                  </div>
-                  <Edit
-                    className="edit-icon"
-                    onClick={() => handleFieldToggle("specialization")}
-                  />
+          <div className="profile-section">
+            <h2>
+              <Shield className="section-icon" />
+              Professional Details
+            </h2>
+            <div className="info-grid">
+            {/* Specialization */}
+            <div className="info-item full-width">
+                <div className="info-text">
+                  <label>Specialization</label>
+                  {editFields.specialization ? (
+                    <input
+                      type="text"
+                      value={editedProfile.specialization}
+                      onChange={(e) =>
+                        handleInputChange("specialization", e.target.value)
+                      }
+                    />
+                  ) : (
+                    <p>{userSpecialization}</p>
+                  )}
                 </div>
-                {/* Member Since */}
-                <div className="info-item">
-                  <div className="info-text">
-                    <label>{t("userprofile.Member Since")}</label>
-                    <p>{joinedDate}</p>
-                  </div>
-                </div>
-                {/* Bar Council ID */}
-                <div className="info-item">
-                  <div className="info-text">
-                    <label>{t("userprofile.Bar Council ID")}</label>
-                    {editFields.barCouncilId ? (
-                      <input
-                        type="text"
-                        value={editedProfile.bar_council_id}
-                        onChange={(e) =>
-                          handleInputChange("bar_council_id", e.target.value)
-                        }
-                      />
-                    ) : (
-                      <p>{userBarCouncilId}</p>
-                    )}
-                  </div>
-                  <Edit
-                    className="edit-icon"
-                    onClick={() => handleFieldToggle("barCouncilId")}
-                  />
+                <Edit
+                  className="edit-icon"
+                  onClick={() => handleFieldToggle("specialization")}
+                />
+              </div>
+              {/* Member Since */}
+              <div className="info-item">
+                <div className="info-text">
+                  <label>Member Since</label>
+                  <p>{joinedDate}</p>
                 </div>
               </div>
+              {/* Bar Council ID */}
+              <div className="info-item">
+                <div className="info-text">
+                  <label>Bar Council ID</label>
+                  {editFields.barCouncilId ? (
+                    <input
+                      type="text"
+                      value={editedProfile.bar_council_id}
+                      onChange={(e) =>
+                        handleInputChange("bar_council_id", e.target.value)
+                      }
+                    />
+                  ) : (
+                    <p>{userBarCouncilId}</p>
+                  )}
+                </div>
+                <Edit
+                  className="edit-icon"
+                  onClick={() => handleFieldToggle("barCouncilId")}
+                />
+              </div>
             </div>
+          </div>
           )}
           <div className="profile-actions">
             {isEditing && (
               <button className="btn-save" onClick={handleSaveProfile}>
-                {t("userprofile.Save Profile")}
+                Save Profile
               </button>
             )}
             <button className="btn-logout" onClick={handleLogout}>
-              {t("userprofile.Logout")}
+              Logout
             </button>
           </div>
         </div>
