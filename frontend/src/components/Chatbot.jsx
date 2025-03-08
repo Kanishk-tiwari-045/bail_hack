@@ -1,7 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+// ChatBot.jsx
+import { useState, useRef, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { Send, Bot, User, ArrowLeft, Trash, Copy, Clock } from "lucide-react";
+import { Send, Bot, User, Trash, Copy } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
 import "../assets/css/chatbot.css";
 import Navbar from "./Navbar";
 
@@ -24,22 +26,18 @@ export default function ChatBot() {
   const [isLoading, setIsLoading] = useState(false);
   const [conversations, setConversations] = useState([]);
   const [currentConversationId, setCurrentConversationId] = useState(null);
-  // Set sidebar always visible (default true)
   const [showConversations, setShowConversations] = useState(true);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Auto-scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Focus input when component mounts
   useEffect(() => {
     if (inputRef.current) inputRef.current.focus();
   }, []);
 
-  // Fetch conversation list on component mount
   useEffect(() => {
     const userEmail = localStorage.getItem("userEmail");
     if (userEmail) {
@@ -54,13 +52,12 @@ export default function ChatBot() {
         .select("*")
         .eq("user_email", userEmail)
         .order("created_at", { ascending: false });
-  
       if (error) throw error;
       setConversations(data || []);
     } catch (error) {
       console.error("Error fetching conversations:", error);
     }
-  };  
+  };
 
   const createNewConversation = async () => {
     const userEmail = localStorage.getItem("userEmail");
@@ -88,18 +85,15 @@ export default function ChatBot() {
 
   const saveMessageToConversation = async (conversationId, message) => {
     try {
-      const { error } = await supabase
-        .from("chatbot_messages")
-        .insert([
-          {
-            conv_id: conversationId,
-            role: message.role,
-            content: message.content,
-            timestamp: message.timestamp,
-          },
-        ]);
+      const { error } = await supabase.from("chatbot_messages").insert([
+        {
+          conv_id: conversationId,
+          role: message.role,
+          content: message.content,
+          timestamp: message.timestamp,
+        },
+      ]);
       if (error) throw error;
-      // Optionally update conversation title for the first user message.
       const userMessages = messages.filter((m) => m.role === "user");
       if (userMessages.length === 1 && message.role === "user") {
         updateConversationTitle(conversationId, message.content);
@@ -110,7 +104,8 @@ export default function ChatBot() {
   };
 
   const updateConversationTitle = async (conversationId, content) => {
-    const title = content.length > 30 ? content.substring(0, 27) + "..." : content;
+    const title =
+      content.length > 30 ? content.substring(0, 27) + "..." : content;
     try {
       const { error } = await supabase
         .from("chatbot_conv")
@@ -162,12 +157,21 @@ export default function ChatBot() {
 
   const deleteConversation = async (conversationId, e) => {
     e.stopPropagation();
-    if (!window.confirm("Are you sure you want to delete this conversation?")) return;
+    if (!window.confirm("Are you sure you want to delete this conversation?"))
+      return;
     try {
-      await supabase.from("chatbot_messages").delete().eq("conv_id", conversationId);
-      const { error } = await supabase.from("chatbot_conv").delete().eq("id", conversationId);
+      await supabase
+        .from("chatbot_messages")
+        .delete()
+        .eq("conv_id", conversationId);
+      const { error } = await supabase
+        .from("chatbot_conv")
+        .delete()
+        .eq("id", conversationId);
       if (error) throw error;
-      setConversations(conversations.filter((conv) => conv.id !== conversationId));
+      setConversations(
+        conversations.filter((conv) => conv.id !== conversationId)
+      );
       if (currentConversationId === conversationId) {
         setCurrentConversationId(null);
         setMessages([
@@ -184,68 +188,66 @@ export default function ChatBot() {
     }
   };
 
-// New RapidAPI constants for the free ChatGPT API
-const NEW_RAPID_API_KEY = "5389ccde0bmshe2d75f6589a7b8cp14764bjsn2f728f9e89d7";
-const NEW_RAPID_API_HOST = "free-chatgpt-api.p.rapidapi.com";
-const NEW_RAPID_API_BASE_URL = "https://free-chatgpt-api.p.rapidapi.com/chat-completion-one";
+  const NEW_RAPID_API_KEY =
+    "5389ccde0bmshe2d75f6589a7b8cp14764bjsn2f728f9e89d7";
+  const NEW_RAPID_API_HOST = "free-chatgpt-api.p.rapidapi.com";
+  const NEW_RAPID_API_BASE_URL =
+    "https://free-chatgpt-api.p.rapidapi.com/chat-completion-one";
 
-const handleSendMessage = async () => {
-  if (!inputValue.trim()) return;
-  let conversationId = currentConversationId;
-  if (!conversationId) {
-    conversationId = await createNewConversation();
-    if (!conversationId) return;
-  }
-  const userMessage = {
-    role: "user",
-    content: inputValue.trim(),
-    timestamp: new Date().toISOString(),
+  const handleSendMessage = async () => {
+    if (!inputValue.trim()) return;
+    let conversationId = currentConversationId;
+    if (!conversationId) {
+      conversationId = await createNewConversation();
+      if (!conversationId) return;
+    }
+    const userMessage = {
+      role: "user",
+      content: inputValue.trim(),
+      timestamp: new Date().toISOString(),
+    };
+    setMessages((prev) => [...prev, userMessage]);
+    setInputValue("");
+    await saveMessageToConversation(conversationId, userMessage);
+    setIsLoading(true);
+
+    try {
+      const apiUrl = `${NEW_RAPID_API_BASE_URL}?prompt=${encodeURIComponent(
+        userMessage.content
+      )}`;
+      const response = await fetch(apiUrl, {
+        method: "GET",
+        headers: {
+          "x-rapidapi-key": NEW_RAPID_API_KEY,
+          "x-rapidapi-host": NEW_RAPID_API_HOST,
+        },
+      });
+      const data = await response.json();
+
+      const assistantMessageContent =
+        data.response || "Sorry, I didn't get a response.";
+      const assistantMessage = {
+        role: "assistant",
+        content: assistantMessageContent,
+        timestamp: new Date().toISOString(),
+      };
+      setMessages((prev) => [...prev, assistantMessage]);
+      await saveMessageToConversation(conversationId, assistantMessage);
+    } catch (error) {
+      console.error("Error getting AI response:", error);
+      const errorMessage = {
+        role: "assistant",
+        content:
+          "I'm sorry, I encountered an error processing your request. Please try again later.",
+        timestamp: new Date().toISOString(),
+        isError: true,
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+      await saveMessageToConversation(conversationId, errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
-  setMessages((prev) => [...prev, userMessage]);
-  setInputValue("");
-  await saveMessageToConversation(conversationId, userMessage);
-  setIsLoading(true);
-
-  try {
-    // Build the GET URL with the user's prompt as a query parameter
-    const apiUrl = `${NEW_RAPID_API_BASE_URL}?prompt=${encodeURIComponent(userMessage.content)}`;
-    console.log("Sending request to RapidAPI with URL:", apiUrl);
-
-    const response = await fetch(apiUrl, {
-      method: "GET",
-      headers: {
-        "x-rapidapi-key": NEW_RAPID_API_KEY,
-        "x-rapidapi-host": NEW_RAPID_API_HOST,
-      },
-    });
-    console.log("RapidAPI response status:", response.status);
-    const data = await response.json();
-    console.log("RapidAPI response data:", data);
-
-    // Extract assistant message from the response (assumes property 'response' contains the answer)
-    const assistantMessageContent = data.response || "Sorry, I didn't get a response.";
-    const assistantMessage = {
-      role: "assistant",
-      content: assistantMessageContent,
-      timestamp: new Date().toISOString(),
-    };
-    setMessages((prev) => [...prev, assistantMessage]);
-    await saveMessageToConversation(conversationId, assistantMessage);
-  } catch (error) {
-    console.error("Error getting AI response:", error);
-    const errorMessage = {
-      role: "assistant",
-      content:
-        "I'm sorry, I encountered an error processing your request. Please try again later.",
-      timestamp: new Date().toISOString(),
-      isError: true,
-    };
-    setMessages((prev) => [...prev, errorMessage]);
-    await saveMessageToConversation(conversationId, errorMessage);
-  } finally {
-    setIsLoading(false);
-  }
-};
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -344,12 +346,24 @@ const handleSendMessage = async () => {
                 } ${message.isError ? "error" : ""}`}
               >
                 <div className="ai-message-avatar">
-                  {message.role === "assistant" ? <Bot size={20} /> : <User size={20} />}
+                  {message.role === "assistant" ? (
+                    <Bot size={20} />
+                  ) : (
+                    <User size={20} />
+                  )}
                 </div>
                 <div className="ai-message-content">
-                  <div className="ai-message-text">{message.content}</div>
+                  <div className="ai-message-text">
+                    {message.role === "assistant" ? (
+                      <ReactMarkdown>{message.content}</ReactMarkdown>
+                    ) : (
+                      message.content
+                    )}
+                  </div>
                   <div className="ai-message-footer">
-                    <span className="ai-message-time">{formatTimestamp(message.timestamp)}</span>
+                    <span className="ai-message-time">
+                      {formatTimestamp(message.timestamp)}
+                    </span>
                     {message.role === "assistant" && !message.isError && (
                       <button
                         className="copy-button"

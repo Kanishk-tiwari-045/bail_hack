@@ -1,18 +1,16 @@
-/* Root Variables for Colors & Common Settings */
+/* chatbot.css */
 :root {
-  --bg-color: #1f2937;         /* Dark background for page */
-  --sidebar-bg: #111827;       /* Darker background for sidebar */
-  --primary-color: #34d399;    /* Green accent */
-  --light-text: #9ca3af;       /* Lighter text color */
-  --white: #1f2937;            /* White for content backgrounds */
-  --border-color: #374151;     /* Border lines in dark theme */
-  --error-color: #dc3545;      /* Error (red) */
-  --radius: 8px;              /* Border radius for UI elements */
-  --transition: 0.3s ease;    /* Common transition timing */
-  /* --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; */
+  --bg-color: #1f2937;
+  --sidebar-bg: #111827;
+  --primary-color: #34d399;
+  --light-text: #9ca3af;
+  --white: #1f2937;
+  --border-color: #374151;
+  --error-color: #dc3545;
+  --radius: 8px;
+  --transition: 0.3s ease;
 }
 
-/* Page Container */
 .chatbot-page {
   display: flex;
   flex-direction: column;
@@ -20,18 +18,14 @@
   margin: 0;
   background-color: var(--bg-color);
   color: var(--light-text);
-  /* font-family: var(--font-stack); */
 }
 
-/* Main Container that holds Sidebar + Chat */
 .chatbot-container {
   display: flex;
   flex: 1;
   position: relative;
-  /* show-sidebar is toggled from JSX if you want a mobile slide-out sidebar */
 }
 
-/* Sidebar: Conversations */
 .conversations-sidebar {
   width: 300px;
   background-color: #1f2937;
@@ -43,7 +37,6 @@
   overflow-y: auto;
 }
 
-/* Optionally slide out on mobile */
 @media (max-width: 768px) {
   .conversations-sidebar {
     position: absolute;
@@ -58,7 +51,6 @@
   }
 }
 
-/* Sidebar Header */
 .sidebar-header {
   padding: 14px;
   border-bottom: 1px solid #737373;
@@ -86,10 +78,9 @@
 }
 
 .new-chat-button:hover {
-  background-color: #28a37f; /* slightly darker green */
+  background-color: #28a37f;
 }
 
-/* Sidebar Conversation List */
 .conversations-list {
   flex: 1;
   overflow-y: auto;
@@ -103,7 +94,6 @@
   font-size: 0.9rem;
 }
 
-/* Individual Conversation Item */
 .conversation-item {
   display: flex;
   align-items: center;
@@ -120,7 +110,7 @@
 }
 
 .conversation-item.active {
-  background-color: rgba(52, 211, 153, 0.15); /* highlight active conv */
+  background-color: rgba(52, 211, 153, 0.15);
   border-left: 3px solid var(--primary-color);
 }
 
@@ -135,7 +125,7 @@
   font-size: 0.95rem;
   font-weight: 500;
   white-space: nowrap;
-  color:#34d399;
+  color: #34d399;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -146,7 +136,6 @@
   margin-top: 2px;
 }
 
-/* Delete Conversation Button */
 .delete-conversation {
   background: none;
   border: none;
@@ -162,7 +151,6 @@
   background-color: rgba(220, 53, 69, 0.1);
 }
 
-/* Main Chat Section */
 .ai-chat-main {
   flex: 1;
   display: flex;
@@ -170,7 +158,6 @@
   background-color: #1f2937;
 }
 
-/* Chat Messages Container */
 .ai-chat-messages {
   flex: 1;
   overflow-y: auto;
@@ -181,7 +168,6 @@
   gap: 16px;
 }
 
-/* Single Message */
 .ai-message {
   display: flex;
   gap: 12px;
@@ -209,7 +195,6 @@
   flex-direction: row-reverse;
 }
 
-/* Avatar for message */
 .ai-message-avatar {
   width: 32px;
   height: 32px;
@@ -232,7 +217,6 @@
   color: #fff;
 }
 
-/* Message content bubble */
 .ai-message-content {
   background-color: #2d3748;
   padding: 12px 16px;
@@ -258,7 +242,6 @@
   border-left: 3px solid var(--error-color);
 }
 
-/* Actual text inside bubble */
 .ai-message-text {
   font-size: 0.95rem;
   line-height: 1.4;
@@ -266,7 +249,67 @@
   word-break: break-word;
 }
 
-/* Footer with time + copy button */
+.ai-message-text h1,
+.ai-message-text h2,
+.ai-message-text h3 {
+  margin: 0.5em 0;
+  color: #fff;
+}
+
+.ai-message-text h1 {
+  font-size: 1.5em;
+}
+
+.ai-message-text h2 {
+  font-size: 1.25em;
+}
+
+.ai-message-text h3 {
+  font-size: 1.1em;
+}
+
+.ai-message-text p {
+  margin: 0.5em 0;
+}
+
+.ai-message-text ul,
+.ai-message-text ol {
+  margin: 0.5em 0;
+  padding-left: 20px;
+}
+
+.ai-message-text li {
+  margin: 0.25em 0;
+}
+
+.ai-message-text a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.ai-message-text a:hover {
+  text-decoration: underline;
+}
+
+.ai-message-text code {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.ai-message-text pre {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 8px;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.ai-message-text pre code {
+  background: none;
+  padding: 0;
+}
+
 .ai-message-footer {
   display: flex;
   justify-content: space-between;
@@ -283,7 +326,6 @@
   color: rgba(255, 255, 255, 0.8);
 }
 
-/* Copy Button */
 .copy-button {
   background: none;
   border: none;
@@ -302,7 +344,6 @@
   color: var(--primary-color);
 }
 
-/* Loading (Typing Indicator) */
 .ai-message.loading .ai-message-content {
   background-color: transparent;
   box-shadow: none;
@@ -327,6 +368,7 @@
 .typing-indicator span:nth-child(2) {
   animation-delay: 0.2s;
 }
+
 .typing-indicator span:nth-child(3) {
   animation-delay: 0.4s;
 }
@@ -342,7 +384,6 @@
   }
 }
 
-/* Input Section */
 .ai-chat-input-container {
   background-color: var(--white);
   border-top: 1px solid #737373;
@@ -413,7 +454,6 @@
   cursor: not-allowed;
 }
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
   .ai-message {
     max-width: 90%;
