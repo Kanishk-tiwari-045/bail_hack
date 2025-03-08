@@ -12,6 +12,10 @@ const { createClient } = require("@supabase/supabase-js");
 // Use your service key so that row-level security is bypassed
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
 app.post("/send-feedback", async (req, res) => {
   const { toEmail, caseId, feedback, dateassigned } = req.body;
   const subject = `Court Feedback: CASE-${caseId}`;
@@ -114,6 +118,42 @@ app.post("/send-trialdate", async (req, res) => {
   } catch (error) {
     console.error("Error sending trial date email:", error);
     return res.status(500).json({ message: "Error sending trial date email", error });
+  }
+});
+
+app.post("/find-similar-cases", async (req, res) => {
+  try {
+    const { caseDetails } = req.body;
+    if (!caseDetails) {
+      return res.status(400).json({ error: "Case details are required." });
+    }
+
+    const prompt = `You are an expert legal AI assistant specializing in Indian court cases. Your task is to analyze the given case and find three similar cases from legal databases of Indian courts. Provide the output in EXACTLY the following structured JSON format without any additional explanations, comments, or text outside the JSON: [ { "caseNumber": "XXXXX", "caseJudge": "Justice ABC", "casePetitioner": "XYZ vs State", "caseStatement": "Brief summary of the case...", "caseSections": "IPC 420, CrPC 144", "caseJudgement": "Final judgment given by the court..." } ] The given court case details are: ${caseDetails} Find legally relevant and contextually similar cases based on legal arguments, case sections, and judgments. Ensure accuracy in Indian legal precedents.`;
+
+    const chatSession = model.startChat();
+    const result = await chatSession.sendMessage(prompt);
+    const responseText = result.response.text();
+
+    console.log("Full Gemini API response text:", responseText);
+
+    // Try to extract JSON from responseText
+    let jsonResponse;
+    try {
+      const jsonStart = responseText.indexOf("[");
+      const jsonEnd = responseText.lastIndexOf("]") + 1;
+      if (jsonStart === -1 || jsonEnd === -1) {
+        throw new Error("JSON boundaries not found in response");
+      }
+      jsonResponse = responseText.substring(jsonStart, jsonEnd);
+      const parsedResponse = JSON.parse(jsonResponse);
+      res.json(parsedResponse);
+    } catch (jsonError) {
+      console.error("Error parsing Gemini API response JSON:", jsonError);
+      return res.status(500).json({ error: "Failed to parse similar cases from Gemini API." });
+    }
+  } catch (error) {
+    console.error("Error fetching similar cases:", error);
+    res.status(500).json({ error: "Failed to retrieve similar cases." });
   }
 });
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { FileText } from "lucide-react";
+import { FileText, X } from "lucide-react";
 import Navbar from "./Navbar";
 import "../assets/css/judgecaselist.css";
 
@@ -21,6 +21,8 @@ export default function JudgeCaseList() {
   const [trialDates, setTrialDates] = useState({});
   const [editingTrialDate, setEditingTrialDate] = useState({});
   const [courtFeedback, setCourtFeedback] = useState({});
+  const [similarCases, setSimilarCases] = useState(null);
+  const [showSimilarCasesModal, setShowSimilarCasesModal] = useState(false);
 
   const userEmail = localStorage.getItem("userEmail");
 
@@ -93,6 +95,53 @@ export default function JudgeCaseList() {
       console.error("Error submitting court feedback:", error);
       alert("Failed to submit feedback.");
     }
+  };
+
+  const handleFetchSimilarCases = async (caseId) => {
+    const caseItem = cases.find((c) => c.id === caseId);
+    if (!caseItem) return;
+    const caseDescription = caseItem.caseDescription;
+    if (!caseDescription) {
+      alert("No case description available for fetching similar cases.");
+      return;
+    }
+    try {
+      const response = await fetch("http://localhost:5000/find-similar-cases", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ caseDetails: caseDescription }),
+      });
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.message || "Failed to fetch similar cases");
+      }
+      const similarCasesResponse = await response.json();
+      console.log("Similar cases fetched:", similarCasesResponse);
+      setSimilarCases(similarCasesResponse);
+      setShowSimilarCasesModal(true);
+    } catch (error) {
+      console.error("Error fetching similar cases:", error);
+      alert("Failed to fetch similar cases.");
+    }
+  };
+
+  const renderSimilarCasesModal = () => {
+    if (!showSimilarCasesModal || !similarCases) return null;
+    return (
+      <div className="similar-cases-modal-backdrop" onClick={() => setShowSimilarCasesModal(false)}>
+        <div className="similar-cases-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="similar-cases-modal-header">
+            <h3>Similar Cases</h3>
+            <button className="similar-cases-modal-close" onClick={() => setShowSimilarCasesModal(false)}>
+              <X size={20} />
+            </button>
+          </div>
+          <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+            {JSON.stringify(similarCases, null, 2)}
+          </pre>
+        </div>
+      </div>
+    );
   };
 
   const fetchCases = async () => {
@@ -388,6 +437,11 @@ export default function JudgeCaseList() {
                         Submit Court Reasoning
                       </button>
                     </div>
+                    <div className="judge-similar-cases-section">
+                      <button className="judge-fetch-similar-button" onClick={() => handleFetchSimilarCases(caseItem.id)}>
+                        Fetch Similar Cases
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -395,6 +449,7 @@ export default function JudgeCaseList() {
           )}
         </div>
       </div>
+      {renderSimilarCasesModal()}
     </div>
   );
 }
