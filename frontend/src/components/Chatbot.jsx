@@ -184,82 +184,68 @@ export default function ChatBot() {
     }
   };
 
-// RapidAPI constants for GPT-4 endpoint
-const RAPID_API_KEY = "5389ccde0bmshe2d75f6589a7b8cp14764bjsn2f728f9e89d7";
-const RAPID_API_HOST = "cheapest-gpt-4-turbo-gpt-4-vision-chatgpt-openai-ai-api.p.rapidapi.com";
-const RAPID_API_URL = "https://cheapest-gpt-4-turbo-gpt-4-vision-chatgpt-openai-ai-api.p.rapidapi.com/v1/chat/completions";
+// New RapidAPI constants for the free ChatGPT API
+const NEW_RAPID_API_KEY = "5389ccde0bmshe2d75f6589a7b8cp14764bjsn2f728f9e89d7";
+const NEW_RAPID_API_HOST = "free-chatgpt-api.p.rapidapi.com";
+const NEW_RAPID_API_BASE_URL = "https://free-chatgpt-api.p.rapidapi.com/chat-completion-one";
 
 const handleSendMessage = async () => {
-    if (!inputValue.trim()) return;
-    let conversationId = currentConversationId;
-    if (!conversationId) {
-      conversationId = await createNewConversation();
-      if (!conversationId) return;
-    }
-    const userMessage = {
-      role: "user",
-      content: inputValue.trim(),
+  if (!inputValue.trim()) return;
+  let conversationId = currentConversationId;
+  if (!conversationId) {
+    conversationId = await createNewConversation();
+    if (!conversationId) return;
+  }
+  const userMessage = {
+    role: "user",
+    content: inputValue.trim(),
+    timestamp: new Date().toISOString(),
+  };
+  setMessages((prev) => [...prev, userMessage]);
+  setInputValue("");
+  await saveMessageToConversation(conversationId, userMessage);
+  setIsLoading(true);
+
+  try {
+    // Build the GET URL with the user's prompt as a query parameter
+    const apiUrl = `${NEW_RAPID_API_BASE_URL}?prompt=${encodeURIComponent(userMessage.content)}`;
+    console.log("Sending request to RapidAPI with URL:", apiUrl);
+
+    const response = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        "x-rapidapi-key": NEW_RAPID_API_KEY,
+        "x-rapidapi-host": NEW_RAPID_API_HOST,
+      },
+    });
+    console.log("RapidAPI response status:", response.status);
+    const data = await response.json();
+    console.log("RapidAPI response data:", data);
+
+    // Extract assistant message from the response (assumes property 'response' contains the answer)
+    const assistantMessageContent = data.response || "Sorry, I didn't get a response.";
+    const assistantMessage = {
+      role: "assistant",
+      content: assistantMessageContent,
       timestamp: new Date().toISOString(),
     };
-    setMessages((prev) => [...prev, userMessage]);
-    setInputValue("");
-    await saveMessageToConversation(conversationId, userMessage);
-    setIsLoading(true);
-  
-    try {
-      console.log("Sending request to RapidAPI with payload:", {
-        messages: [{ role: "user", content: userMessage.content }],
-        model: "gpt-4o",
-        max_tokens: 100,
-        temperature: 0.9,
-      });
-  
-      const response = await fetch(RAPID_API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-rapidapi-key": RAPID_API_KEY,
-          "x-rapidapi-host": RAPID_API_HOST,
-        },
-        body: JSON.stringify({
-          messages: [{ role: "user", content: userMessage.content }],
-          model: "gpt-4o",
-          max_tokens: 100,
-          temperature: 0.9,
-        }),
-      });
-      console.log("RapidAPI response status:", response.status);
-      const data = await response.json();
-      console.log("RapidAPI response data:", data);
-  
-      // Extract the assistant's response from the choices array
-      const assistantMessageContent =
-        data?.choices && data.choices.length > 0
-          ? data.choices[0].message.content
-          : "Sorry, I didn't get a response.";
-  
-      const assistantMessage = {
-        role: "assistant",
-        content: assistantMessageContent,
-        timestamp: new Date().toISOString(),
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
-      await saveMessageToConversation(conversationId, assistantMessage);
-    } catch (error) {
-      console.error("Error getting AI response:", error);
-      const errorMessage = {
-        role: "assistant",
-        content:
-          "I'm sorry, I encountered an error processing your request. Please try again later.",
-        timestamp: new Date().toISOString(),
-        isError: true,
-      };
-      setMessages((prev) => [...prev, errorMessage]);
-      await saveMessageToConversation(conversationId, errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  };  
+    setMessages((prev) => [...prev, assistantMessage]);
+    await saveMessageToConversation(conversationId, assistantMessage);
+  } catch (error) {
+    console.error("Error getting AI response:", error);
+    const errorMessage = {
+      role: "assistant",
+      content:
+        "I'm sorry, I encountered an error processing your request. Please try again later.",
+      timestamp: new Date().toISOString(),
+      isError: true,
+    };
+    setMessages((prev) => [...prev, errorMessage]);
+    await saveMessageToConversation(conversationId, errorMessage);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
