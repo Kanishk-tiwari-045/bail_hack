@@ -184,70 +184,55 @@ export default function ChatBot() {
     }
   };
 
-// New RapidAPI configuration using the conversationllama endpoint
-const NEW_RAPID_API_KEY = "5389ccde0bmshe2d75f6589a7b8cp14764bjsn2f728f9e89d7";
-const NEW_RAPID_API_HOST = "open-ai21.p.rapidapi.com";
-const NEW_RAPID_API_BASE_URL = "https://open-ai21.p.rapidapi.com/conversationllama";
-
-const handleSendMessage = async () => {
-  if (!inputValue.trim()) return;
-  let conversationId = currentConversationId;
-  if (!conversationId) {
-    conversationId = await createNewConversation();
-    if (!conversationId) return;
-  }
-  const userMessage = {
-    role: "user",
-    content: inputValue.trim(),
-    timestamp: new Date().toISOString(),
-  };
-  setMessages((prev) => [...prev, userMessage]);
-  setInputValue("");
-  await saveMessageToConversation(conversationId, userMessage);
-  setIsLoading(true);
-
-  try {
-    // Prepare the payload using POST (as the conversationllama endpoint expects)
-    const response = await fetch(NEW_RAPID_API_BASE_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-rapidapi-key": NEW_RAPID_API_KEY,
-        "x-rapidapi-host": NEW_RAPID_API_HOST,
-      },
-      body: JSON.stringify({
-        messages: [{ role: "user", content: userMessage.content }],
-        web_access: false,
-      }),
-    });
-    console.log("RapidAPI response status:", response.status);
-    const data = await response.json();
-    console.log("RapidAPI response data:", data);
-
-    // data.result holds the actual text from the AI
-    const assistantMessageContent = data.result || "Sorry, I didn't get a response.";
-    const assistantMessage = {
-      role: "assistant",
-      content: assistantMessageContent,
+  const handleSendMessage = async () => {
+    if (!inputValue.trim()) return;
+    let conversationId = currentConversationId;
+    if (!conversationId) {
+      conversationId = await createNewConversation();
+      if (!conversationId) return;
+    }
+    const userMessage = {
+      role: "user",
+      content: inputValue.trim(),
       timestamp: new Date().toISOString(),
     };
-    setMessages((prev) => [...prev, assistantMessage]);
-    await saveMessageToConversation(conversationId, assistantMessage);
-  } catch (error) {
-    console.error("Error getting AI response:", error);
-    const errorMessage = {
-      role: "assistant",
-      content:
-        "I'm sorry, I encountered an error processing your request. Please try again later.",
-      timestamp: new Date().toISOString(),
-      isError: true,
-    };
-    setMessages((prev) => [...prev, errorMessage]);
-    await saveMessageToConversation(conversationId, errorMessage);
-  } finally {
-    setIsLoading(false);
-  }
-};
+    setMessages((prev) => [...prev, userMessage]);
+    setInputValue("");
+    await saveMessageToConversation(conversationId, userMessage);
+    setIsLoading(true);
+  
+    try {
+      // Call your server's Gemini API endpoint (legal-query)
+      const response = await fetch("http://localhost:5000/legal-query", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: userMessage.content }),
+      });
+      const data = await response.json();
+      // data is expected to have an "Answer" key with the assistant's response.
+      const assistantMessageContent = data.Answer || "Sorry, I didn't get a response.";
+      const assistantMessage = {
+        role: "assistant",
+        content: assistantMessageContent,
+        timestamp: new Date().toISOString(),
+      };
+      setMessages((prev) => [...prev, assistantMessage]);
+      await saveMessageToConversation(conversationId, assistantMessage);
+    } catch (error) {
+      console.error("Error getting AI response:", error);
+      const errorMessage = {
+        role: "assistant",
+        content:
+          "I'm sorry, I encountered an error processing your request. Please try again later.",
+        timestamp: new Date().toISOString(),
+        isError: true,
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+      await saveMessageToConversation(conversationId, errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };  
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
