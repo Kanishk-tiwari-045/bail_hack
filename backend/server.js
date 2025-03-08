@@ -22,28 +22,36 @@ const generationConfig = {
   maxOutputTokens: 8192,
   responseMimeType: "text/plain",
 };
-
 app.post("/legal-query", async (req, res) => {
   try {
-    const { question } = req.body;
+    const { question, language = "english" } = req.body; // Default to English
     if (!question) {
       return res.status(400).json({ error: "Question is required." });
     }
+
+    // Validate language
+    const supportedLanguages = ["english", "hindi"];
+    const selectedLanguage = supportedLanguages.includes(language.toLowerCase())
+      ? language.toLowerCase()
+      : "english";
+
     const prompt = `You are Nyaya Mitra ChatBot, a highly knowledgeable legal AI assistant specializing in Indian law.
 - Respond strictly in **valid JSON format** without any extra text.
 - Your response must be in **plain text** with **no special characters, markdown, or bullet points**.
+- Respond in **${selectedLanguage}** language only.
 - Ensure **Nyaya Mitra ChatBot** is naturally mentioned in the response.
 
 JSON FORMAT:
 {
   "Question": "${question}",
-  "Answer": "Provide a structured and legally accurate response in simple text format. No special symbols, no asterisks, no markdown."
+  "Answer": "Provide a structured and legally accurate response in simple text format in ${selectedLanguage}. No special symbols, no asterisks, no markdown."
 }`;
 
     const chatSession = model.startChat({ generationConfig });
     const result = await chatSession.sendMessage(prompt);
     let responseText = result.response.text().trim();
     console.log("Full Gemini API response text:", responseText);
+
     let jsonResponse;
     try {
       jsonResponse = JSON.parse(responseText);

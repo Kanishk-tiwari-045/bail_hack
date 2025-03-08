@@ -81,6 +81,34 @@
   background-color: #28a37f;
 }
 
+.language-selector {
+  margin: 10px 14px;
+  text-align: center;
+}
+
+.language-selector select {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  background-color: #2d3748;
+  color: #e5e7eb;
+  cursor: pointer;
+  transition: border-color var(--transition);
+}
+
+.language-selector select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.2);
+}
+
+.language-selector select option {
+  background-color: #2d3748;
+  color: #e5e7eb;
+}
+
 .conversations-list {
   flex: 1;
   overflow-y: auto;

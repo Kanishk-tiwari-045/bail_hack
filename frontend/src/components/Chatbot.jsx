@@ -24,22 +24,19 @@ export default function ChatBot() {
   const [isLoading, setIsLoading] = useState(false);
   const [conversations, setConversations] = useState([]);
   const [currentConversationId, setCurrentConversationId] = useState(null);
-  // Set sidebar always visible (default true)
   const [showConversations, setShowConversations] = useState(true);
+  const [language, setLanguage] = useState("english"); // New state for language
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Auto-scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Focus input when component mounts
   useEffect(() => {
     if (inputRef.current) inputRef.current.focus();
   }, []);
 
-  // Fetch conversation list on component mount
   useEffect(() => {
     const userEmail = localStorage.getItem("userEmail");
     if (userEmail) {
@@ -54,13 +51,12 @@ export default function ChatBot() {
         .select("*")
         .eq("user_email", userEmail)
         .order("created_at", { ascending: false });
-  
       if (error) throw error;
       setConversations(data || []);
     } catch (error) {
       console.error("Error fetching conversations:", error);
     }
-  };  
+  };
 
   const createNewConversation = async () => {
     const userEmail = localStorage.getItem("userEmail");
@@ -88,18 +84,15 @@ export default function ChatBot() {
 
   const saveMessageToConversation = async (conversationId, message) => {
     try {
-      const { error } = await supabase
-        .from("chatbot_messages")
-        .insert([
-          {
-            conv_id: conversationId,
-            role: message.role,
-            content: message.content,
-            timestamp: message.timestamp,
-          },
-        ]);
+      const { error } = await supabase.from("chatbot_messages").insert([
+        {
+          conv_id: conversationId,
+          role: message.role,
+          content: message.content,
+          timestamp: message.timestamp,
+        },
+      ]);
       if (error) throw error;
-      // Optionally update conversation title for the first user message.
       const userMessages = messages.filter((m) => m.role === "user");
       if (userMessages.length === 1 && message.role === "user") {
         updateConversationTitle(conversationId, message.content);
@@ -110,7 +103,8 @@ export default function ChatBot() {
   };
 
   const updateConversationTitle = async (conversationId, content) => {
-    const title = content.length > 30 ? content.substring(0, 27) + "..." : content;
+    const title =
+      content.length > 30 ? content.substring(0, 27) + "..." : content;
     try {
       const { error } = await supabase
         .from("chatbot_conv")
@@ -148,7 +142,9 @@ export default function ChatBot() {
           {
             role: "assistant",
             content:
-              "Hello! I'm your legal assistant. How can I help you with your bail-related questions today?",
+              language === "hindi"
+                ? "हाय! मैं आपका कानूनी सहायक हूँ। मैं आज आपके जमानत से संबंधित सवालों में कैसे मदद कर सकता हूँ?"
+                : "Hello! I'm your legal assistant. How can I help you with your bail-related questions today?",
             timestamp: new Date().toISOString(),
           },
         ]);
@@ -162,19 +158,30 @@ export default function ChatBot() {
 
   const deleteConversation = async (conversationId, e) => {
     e.stopPropagation();
-    if (!window.confirm("Are you sure you want to delete this conversation?")) return;
+    if (!window.confirm("Are you sure you want to delete this conversation?"))
+      return;
     try {
-      await supabase.from("chatbot_messages").delete().eq("conv_id", conversationId);
-      const { error } = await supabase.from("chatbot_conv").delete().eq("id", conversationId);
+      await supabase
+        .from("chatbot_messages")
+        .delete()
+        .eq("conv_id", conversationId);
+      const { error } = await supabase
+        .from("chatbot_conv")
+        .delete()
+        .eq("id", conversationId);
       if (error) throw error;
-      setConversations(conversations.filter((conv) => conv.id !== conversationId));
+      setConversations(
+        conversations.filter((conv) => conv.id !== conversationId)
+      );
       if (currentConversationId === conversationId) {
         setCurrentConversationId(null);
         setMessages([
           {
             role: "assistant",
             content:
-              "Hello! I'm your legal assistant. How can I help you with your bail-related questions today?",
+              language === "hindi"
+                ? "हाय! मैं आपका कानूनी सहायक हूँ। मैं आज आपके जमानत से संबंधित सवालों में कैसे मदद कर सकता हूँ?"
+                : "Hello! I'm your legal assistant. How can I help you with your bail-related questions today?",
             timestamp: new Date().toISOString(),
           },
         ]);
@@ -200,17 +207,16 @@ export default function ChatBot() {
     setInputValue("");
     await saveMessageToConversation(conversationId, userMessage);
     setIsLoading(true);
-  
+
     try {
-      // Call your server's Gemini API endpoint (legal-query)
       const response = await fetch("http://localhost:5000/legal-query", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: userMessage.content }),
+        body: JSON.stringify({ question: userMessage.content, language }),
       });
       const data = await response.json();
-      // data is expected to have an "Answer" key with the assistant's response.
-      const assistantMessageContent = data.Answer || "Sorry, I didn't get a response.";
+      const assistantMessageContent =
+        data.Answer || "Sorry, I didn't get a response.";
       const assistantMessage = {
         role: "assistant",
         content: assistantMessageContent,
@@ -223,7 +229,9 @@ export default function ChatBot() {
       const errorMessage = {
         role: "assistant",
         content:
-          "I'm sorry, I encountered an error processing your request. Please try again later.",
+          language === "hindi"
+            ? "मुझे खेद है, आपकी अनुरोध को संसाधित करने में त्रुटि हुई। कृपया बाद में पुनः प्रयास करें।"
+            : "I'm sorry, I encountered an error processing your request. Please try again later.",
         timestamp: new Date().toISOString(),
         isError: true,
       };
@@ -232,7 +240,7 @@ export default function ChatBot() {
     } finally {
       setIsLoading(false);
     }
-  };  
+  };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -257,8 +265,8 @@ export default function ChatBot() {
     const date = new Date(timestamp);
     const now = new Date();
     const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
-    if (diffDays === 0) return "Today";
-    if (diffDays === 1) return "Yesterday";
+    if (diffDays === 0) return language === "hindi" ? "आज" : "Today";
+    if (diffDays === 1) return language === "hindi" ? "कल" : "Yesterday";
     if (diffDays < 7) return date.toLocaleDateString([], { weekday: "long" });
     return date.toLocaleDateString([], { month: "short", day: "numeric" });
   };
@@ -269,7 +277,7 @@ export default function ChatBot() {
       <div className="chatbot-container show-sidebar">
         <div className="conversations-sidebar">
           <div className="sidebar-header">
-            <h2>Conversations</h2>
+            <h2>{language === "hindi" ? "बातचीत" : "Conversations"}</h2>
             <button
               className="new-chat-button"
               onClick={() => {
@@ -278,20 +286,35 @@ export default function ChatBot() {
                   {
                     role: "assistant",
                     content:
-                      "Hello! I'm your legal assistant. How can I help you with your bail-related questions today?",
+                      language === "hindi"
+                        ? "हाय! मैं आपका कानूनी सहायक हूँ। मैं आज आपके जमानत से संबंधित सवालों में कैसे मदद कर सकता हूँ?"
+                        : "Hello! I'm your legal assistant. How can I help you with your bail-related questions today?",
                     timestamp: new Date().toISOString(),
                   },
                 ]);
                 setShowConversations(false);
               }}
             >
-              + Chat
+              + {language === "hindi" ? "चैट" : "Chat"}
             </button>
+          </div>
+          <div className="language-selector">
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+            >
+              <option value="english">English</option>
+              <option value="hindi">हिन्दी</option>
+            </select>
           </div>
           <div className="conversations-list">
             {conversations.length === 0 ? (
               <div className="no-conversations">
-                <p>No previous conversations</p>
+                <p>
+                  {language === "hindi"
+                    ? "कोई पिछली बातचीत नहीं"
+                    : "No previous conversations"}
+                </p>
               </div>
             ) : (
               conversations.map((conversation) => (
@@ -331,12 +354,18 @@ export default function ChatBot() {
                 } ${message.isError ? "error" : ""}`}
               >
                 <div className="ai-message-avatar">
-                  {message.role === "assistant" ? <Bot size={20} /> : <User size={20} />}
+                  {message.role === "assistant" ? (
+                    <Bot size={20} />
+                  ) : (
+                    <User size={20} />
+                  )}
                 </div>
                 <div className="ai-message-content">
                   <div className="ai-message-text">{message.content}</div>
                   <div className="ai-message-footer">
-                    <span className="ai-message-time">{formatTimestamp(message.timestamp)}</span>
+                    <span className="ai-message-time">
+                      {formatTimestamp(message.timestamp)}
+                    </span>
                     {message.role === "assistant" && !message.isError && (
                       <button
                         className="copy-button"
@@ -378,7 +407,11 @@ export default function ChatBot() {
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Ask a question about bail..."
+                  placeholder={
+                    language === "hindi"
+                      ? "जमानत के बारे में सवाल पूछें..."
+                      : "Ask a question about bail..."
+                  }
                   rows={1}
                 />
                 <button
