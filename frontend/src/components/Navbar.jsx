@@ -38,7 +38,7 @@ const Navbar = () => {
         <div className="logo">
           <Link to="/dashboard" className="logo-link">
             <Scale className="logo-icon" />
-            <span>Bail Reckoner</span>
+            <span>Nyaya Mitra</span>
           </Link>
         </div>
         <nav className="navbar">
