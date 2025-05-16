@@ -53,6 +53,11 @@ const RequestsList = () => {
     }
   };
 
+  const truncate = (text, limit = 80) => {
+    if (!text) return "";
+    return text.length > limit ? text.substring(0, limit) + "..." : text;
+  };
+
   const handleAcceptRequest = async (requestId, caseId, requestedBy) => {
     try {
       // 1. Update the case: set legalAid to "accepted: <providerEmail>"
@@ -202,7 +207,7 @@ const RequestsList = () => {
                     </p>
                     <p>
                       <strong>Case Description:</strong>{" "}
-                      {caseData.caseDescription}
+                      {truncate(caseData.caseDescription, 200)}
                     </p>
                   </div>
                 )}

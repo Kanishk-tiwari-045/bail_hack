@@ -29,10 +29,10 @@
 }
 
 .dashboardSections {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  justify-content: center; /* Center the sections */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 columns */
+  grid-template-rows: repeat(2, auto);   /* 2 rows */
+  gap: 20px; /* optional spacing between grid items */
 }
 
 .dashboardSection {
@@ -49,7 +49,7 @@
 }
 
 .dashboardSection:hover {
-  transform: scale(1.05);
+  transform: scale(1.02);
 }
 
 .dashboardSection h2 {

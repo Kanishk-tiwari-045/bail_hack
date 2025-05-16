@@ -177,7 +177,7 @@
 .judge-save-date-button:disabled,
 .judge-submit-feedback-button:disabled,
 .judge-fetch-similar-button:disabled {
-  background-color: #4b5563;
+  background-color: #10b981;
   cursor: not-allowed;
   opacity: 0.7;
 }
@@ -219,17 +219,18 @@
 /* Fetch Similar Cases Button */
 .judge-fetch-similar-button {
   padding: 0.5rem 1rem;
-  background-color: #6366f1;
+  background-color: #34d399;
   color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
+  font-size: medium;
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .judge-fetch-similar-button:hover:not(:disabled) {
-  background-color: #4f46e5;
+  background-color: #2ca478;
   transform: translateY(-2px);
 }
 
@@ -292,6 +293,75 @@
   text-align: left;
 }
 
+/* Past case link style */
+.past-case-link {
+  color: #34d399;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-right: 3px;
+  /* adjust spacing to your liking */
+}
+
+.past-case-link:hover {
+  color: #10b981;
+}
+
+/* Past Case Modal Backdrop */
+.past-case-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Past Case Modal */
+.past-case-modal {
+  background-color: #1f2937;
+  color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 90%;
+  position: relative;
+}
+
+.past-case-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.past-case-modal-close {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.past-case-modal-close:hover {
+  color: #ef4444;
+}
+
+.past-case-modal-content {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* (Optional) Past case content styling */
+.past-case-modal-content p {
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+
 .similar-cases-table th {
   background-color: #6366f1;
   color: #fff;
@@ -337,22 +407,25 @@
 }
 
 .judge-analyze-bail-button {
-  background-color: #4b5e91;
+  background-color: #34d399;
   color: white;
   border: none;
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
+  font-size: medium;
+  font-weight: 600;
   margin-left: 10px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .judge-analyze-bail-button:hover {
-  background-color: #3a4a73;
+  transform: translateY(-2px);
+  background-color:#10b981  ;
 }
 
 .judge-analyze-bail-button:disabled {
-  background-color: #cccccc;
+  background-color: #26996f;
   cursor: not-allowed;
 }
 

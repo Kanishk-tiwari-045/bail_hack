@@ -11,9 +11,6 @@ const AdminDashboard = () => {
     <div className={styles.dashboard}>
       <header className={styles.dashboardHeader}>
         <h1>Admin Dashboard</h1>
-        <Link to="/notifications" className={styles.notificationIcon}>
-          <FaBell size={25} />
-        </Link>
       </header>
       <div className={styles.dashboardSections}>
         <div className={styles.dashboardSection}>

@@ -29,13 +29,13 @@
   }
   
   .back-arrow {
-    color: #34d399;
+    color: rgba(0, 0, 0, 0.8);
     cursor: pointer;
     transition: color 0.2s;
   }
   
   .back-arrow:hover {
-    color: #10b981;
+    color: rgba(0, 0, 0, 0.8);
   }
   
   .resource-header h1 {

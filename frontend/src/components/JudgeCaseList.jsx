@@ -23,14 +23,25 @@ export default function JudgeCaseList() {
   const [courtFeedback, setCourtFeedback] = useState({});
   const [similarCases, setSimilarCases] = useState(null);
   const [showSimilarCasesModal, setShowSimilarCasesModal] = useState(false);
-  // New state for bail analysis
+
+  // Bail analysis states
   const [bailAnalysis, setBailAnalysis] = useState(null);
   const [showBailModal, setShowBailModal] = useState(false);
   const [fetchingBail, setFetchingBail] = useState({});
-  // Existing states
+
+  // Similar cases fetch states
   const [fetchingSimilar, setFetchingSimilar] = useState({});
+
+  // Feedback states
   const [submittingFeedback, setSubmittingFeedback] = useState({});
+
+  // Trial date states
   const [savingTrialDate, setSavingTrialDate] = useState({});
+
+  // Past case modal states
+  const [showPastCaseModal, setShowPastCaseModal] = useState(false);
+  const [selectedPastCase, setSelectedPastCase] = useState(null);
+  const [loadingPastCase, setLoadingPastCase] = useState(false);
 
   const userEmail = localStorage.getItem("userEmail");
 
@@ -38,6 +49,38 @@ export default function JudgeCaseList() {
     fetchCases();
   }, []);
 
+  const fetchCases = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("cases")
+        .select("*")
+        .eq("judgeAssigned", userEmail);
+
+      if (error) throw error;
+
+      // Sort by severity so that "serious" is on top
+      const severityOrder = {
+        petty: 1,
+        minor: 2,
+        moderate: 3,
+        serious: 4,
+      };
+      const sortedData = (data || []).sort(
+        (a, b) =>
+          severityOrder[b.severity?.toLowerCase()] -
+          severityOrder[a.severity?.toLowerCase()]
+      );
+
+      setCases(sortedData);
+    } catch (error) {
+      console.error("Error fetching cases:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // =========== FEEDBACK HANDLER ===========
   const handleCourtFeedbackChange = (caseId, value) => {
     setCourtFeedback({ ...courtFeedback, [caseId]: value });
   };
@@ -49,7 +92,9 @@ export default function JudgeCaseList() {
       return;
     }
     setSubmittingFeedback({ ...submittingFeedback, [caseId]: true });
+
     try {
+      // 1. Fetch case info
       const { data: caseData, error: caseError } = await supabase
         .from("cases")
         .select("submitted_by, legalAid, dateassigned")
@@ -57,6 +102,7 @@ export default function JudgeCaseList() {
         .single();
       if (caseError) throw caseError;
 
+      // 2. Get family_email from users table
       const { data: userData, error: userError } = await supabase
         .from("users")
         .select("family_email")
@@ -67,6 +113,7 @@ export default function JudgeCaseList() {
       const familyEmail = userData.family_email;
       const dateassigned = caseData.dateassigned;
 
+      // 3. Insert feedback into "court_feedbacks"
       const { error: insertError } = await supabase
         .from("court_feedbacks")
         .insert([
@@ -81,6 +128,7 @@ export default function JudgeCaseList() {
 
       alert("Court feedback submitted successfully!");
 
+      // 4. Optionally send email
       const response = await fetch("http://localhost:5000/send-feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -103,15 +151,18 @@ export default function JudgeCaseList() {
     }
   };
 
+  // =========== SIMILAR CASES HANDLER ===========
   const handleFetchSimilarCases = async (caseId) => {
     const caseItem = cases.find((c) => c.id === caseId);
     if (!caseItem) return;
+
     const caseDescription = caseItem.caseDescription;
     if (!caseDescription) {
       alert("No case description available for fetching similar cases.");
       return;
     }
     setFetchingSimilar({ ...fetchingSimilar, [caseId]: true });
+
     try {
       const response = await fetch("http://localhost:5000/find-similar-cases", {
         method: "POST",
@@ -134,10 +185,11 @@ export default function JudgeCaseList() {
     }
   };
 
-  // New bail analysis handler
+  // =========== BAIL ANALYSIS HANDLER ===========
   const handleBailAnalysis = async (caseId) => {
     const caseItem = cases.find((c) => c.id === caseId);
     if (!caseItem) return;
+
     setFetchingBail({ ...fetchingBail, [caseId]: true });
     try {
       const response = await fetch("http://localhost:5000/analyze-bail", {
@@ -145,7 +197,7 @@ export default function JudgeCaseList() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           caseDescription: caseItem.caseDescription,
-          sections: [caseItem.offenseNature], // Assuming offenseNature as section
+          sections: [caseItem.offenseNature],
         }),
       });
       if (!response.ok) {
@@ -162,6 +214,153 @@ export default function JudgeCaseList() {
     }
   };
 
+  // =========== TRIAL DATE HANDLER ===========
+  const handleTrialDateChange = (caseId, value) => {
+    setTrialDates({ ...trialDates, [caseId]: value });
+  };
+
+  const toggleTrialDateInput = (caseId) => {
+    setEditingTrialDate({
+      ...editingTrialDate,
+      [caseId]: !editingTrialDate[caseId],
+    });
+  };
+
+  const saveTrialDate = async (caseId) => {
+    const dateValue = trialDates[caseId];
+    if (!dateValue) return alert("Please enter a trial date");
+    setSavingTrialDate({ ...savingTrialDate, [caseId]: true });
+
+    try {
+      // 1. Update dateassigned
+      const { error } = await supabase
+        .from("cases")
+        .update({ dateassigned: dateValue })
+        .eq("id", caseId);
+      if (error) throw error;
+
+      // 2. Fetch case details
+      const { data: caseData, error: caseError } = await supabase
+        .from("cases")
+        .select("submitted_by, legalAid")
+        .eq("id", caseId)
+        .single();
+      if (caseError) throw caseError;
+
+      // 3. Family email
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("family_email")
+        .eq("email", caseData.submitted_by)
+        .single();
+      if (userError) throw userError;
+
+      const familyEmail = userData.family_email;
+      const legalAid = caseData.legalAid || "";
+      localStorage.setItem("selected_prisoner", familyEmail);
+      localStorage.setItem("selected_aid", legalAid);
+
+      // 4. Send notification email
+      const response = await fetch("http://localhost:5000/send-trialdate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          toEmail: familyEmail,
+          aidEmail: legalAid,
+          trialDate: dateValue,
+          caseId: caseId,
+        }),
+      });
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.message || "Trial date email sending failed");
+      }
+
+      alert("Trial date saved and notification sent successfully!");
+      setEditingTrialDate({ ...editingTrialDate, [caseId]: false });
+      fetchCases(); // refresh
+    } catch (error) {
+      console.error("Error saving trial date:", error);
+      alert("Failed to save trial date.");
+    } finally {
+      setSavingTrialDate({ ...savingTrialDate, [caseId]: false });
+    }
+  };
+
+  // =========== PAST CASE MODAL HANDLERS ===========
+  const openPastCaseModal = async (caseNo) => {
+    setSelectedPastCase(null);
+    setShowPastCaseModal(true);
+    setLoadingPastCase(true);
+    try {
+      const { data, error } = await supabase
+        .from("cases")
+        .select("*")
+        .eq("id", caseNo)
+        .single();
+      if (error) throw error;
+      setSelectedPastCase(data);
+    } catch (err) {
+      console.error("Error fetching past case data:", err);
+      setSelectedPastCase(null);
+    } finally {
+      setLoadingPastCase(false);
+    }
+  };
+
+  const closePastCaseModal = () => {
+    setShowPastCaseModal(false);
+    setSelectedPastCase(null);
+  };
+
+  const renderPastCaseModal = () => {
+    if (!showPastCaseModal) return null;
+    return (
+      <div className="past-case-modal-backdrop" onClick={closePastCaseModal}>
+        <div className="past-case-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="past-case-modal-header">
+            <h3>Past Case Details</h3>
+            <button
+              className="past-case-modal-close"
+              onClick={closePastCaseModal}
+            >
+              <X size={20} />
+            </button>
+          </div>
+          <div className="past-case-modal-content">
+            {loadingPastCase && <p>Loading past case details...</p>}
+            {!loadingPastCase && selectedPastCase && (
+              <>
+                <p>
+                  <strong>Case ID:</strong> {selectedPastCase.id}
+                </p>
+                <p>
+                  <strong>Severity:</strong> {selectedPastCase.severity}
+                </p>
+                <p>
+                  <strong>Offense Nature:</strong>{" "}
+                  {selectedPastCase.offenseNature}
+                </p>
+                <p>
+                  <strong>Description:</strong>{" "}
+                  {selectedPastCase.caseDescription || "N/A"}
+                </p>
+                <p>
+                  <strong>Criminal History:</strong>{" "}
+                  {selectedPastCase.criminalHistory}
+                </p>
+              </>
+            )}
+            {!loadingPastCase && !selectedPastCase && (
+              <p>Unable to load past case details.</p>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // =========== RENDER SIMILAR CASES MODAL ===========
   const renderSimilarCasesModal = () => {
     if (!showSimilarCasesModal || !similarCases) return null;
     return (
@@ -201,13 +400,9 @@ export default function JudgeCaseList() {
                     <td>{caseItem.caseNumber || "N/A"}</td>
                     <td>{caseItem.caseJudge || "N/A"}</td>
                     <td>{caseItem.casePetitioner || "N/A"}</td>
-                    <td>
-                      {truncate(caseItem.caseStatement || "No statement", 100)}
-                    </td>
+                    <td>{truncate(caseItem.caseStatement || "No statement", 100)}</td>
                     <td>{truncate(caseItem.caseSections || "N/A", 50)}</td>
-                    <td>
-                      {truncate(caseItem.caseJudgement || "No judgement", 100)}
-                    </td>
+                    <td>{truncate(caseItem.caseJudgement || "No judgement", 100)}</td>
                   </tr>
                 ))
               ) : (
@@ -222,7 +417,7 @@ export default function JudgeCaseList() {
     );
   };
 
-  // New bail analysis modal
+  // =========== RENDER BAIL ANALYSIS MODAL ===========
   const renderBailAnalysisModal = () => {
     if (!showBailModal || !bailAnalysis) return null;
     return (
@@ -246,114 +441,16 @@ export default function JudgeCaseList() {
           <div className="bail-analysis-content">
             <p>
               <strong>Bail Decision:</strong>{" "}
-              {bailAnalysis.conclusion.bailDecision}
+              {bailAnalysis.conclusion?.bailDecision || "N/A"}
             </p>
             <p>
-              <strong>Reasoning:</strong> {bailAnalysis.conclusion.reasoning}
+              <strong>Reasoning:</strong>{" "}
+              {bailAnalysis.conclusion?.reasoning || "N/A"}
             </p>
           </div>
         </div>
       </div>
     );
-  };
-
-  const fetchCases = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from("cases")
-        .select("*")
-        .eq("judgeAssigned", userEmail);
-      const severityOrder = {
-        petty: 1,
-        minor: 2,
-        moderate: 3,
-        serious: 4,
-      };
-      const sortedData = data.sort(
-        (a, b) =>
-          severityOrder[b.severity.toLowerCase()] -
-          severityOrder[a.severity.toLowerCase()]
-      );
-      setCases(sortedData);
-      if (error) throw error;
-      setCases(data || []);
-    } catch (error) {
-      console.error("Error fetching cases:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const toggleCaseExpand = (caseId) => {
-    setExpandedCase(expandedCase === caseId ? null : caseId);
-  };
-
-  const handleTrialDateChange = (caseId, value) => {
-    setTrialDates({ ...trialDates, [caseId]: value });
-  };
-
-  const toggleTrialDateInput = (caseId) => {
-    setEditingTrialDate({
-      ...editingTrialDate,
-      [caseId]: !editingTrialDate[caseId],
-    });
-  };
-
-  const saveTrialDate = async (caseId) => {
-    const dateValue = trialDates[caseId];
-    if (!dateValue) return alert("Please enter a trial date");
-    setSavingTrialDate({ ...savingTrialDate, [caseId]: true });
-    try {
-      const { error } = await supabase
-        .from("cases")
-        .update({ dateassigned: dateValue })
-        .eq("id", caseId);
-      if (error) throw error;
-
-      const { data: caseData, error: caseError } = await supabase
-        .from("cases")
-        .select("submitted_by, legalAid")
-        .eq("id", caseId)
-        .single();
-      if (caseError) throw caseError;
-
-      const { data: userData, error: userError } = await supabase
-        .from("users")
-        .select("family_email")
-        .eq("email", caseData.submitted_by)
-        .single();
-      if (userError) throw userError;
-
-      const familyEmail = userData.family_email;
-      const legalAid = caseData.legalAid || "";
-      localStorage.setItem("selected_prisoner", familyEmail);
-      localStorage.setItem("selected_aid", legalAid);
-
-      const response = await fetch("http://localhost:5000/send-trialdate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          toEmail: familyEmail,
-          aidEmail: legalAid,
-          trialDate: dateValue,
-          caseId: caseId,
-        }),
-      });
-      if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.message || "Trial date email sending failed");
-      }
-
-      alert("Trial date saved and notification sent successfully!");
-      setEditingTrialDate({ ...editingTrialDate, [caseId]: false });
-      fetchCases();
-    } catch (error) {
-      console.error("Error saving trial date:", error);
-      alert("Failed to save trial date.");
-    } finally {
-      setSavingTrialDate({ ...savingTrialDate, [caseId]: false });
-    }
   };
 
   if (loading) {
@@ -363,6 +460,36 @@ export default function JudgeCaseList() {
       </div>
     );
   }
+
+  const toggleCaseExpand = (caseId) => {
+    setExpandedCase(expandedCase === caseId ? null : caseId);
+  };
+
+  // Helper to render "Past Cases" as clickable links
+  const renderPastCasesLinks = (pastRecordsString) => {
+    if (!pastRecordsString) return "N/A";
+    const caseIds = pastRecordsString
+      .split(",")
+      .map((id) => id.trim())
+      .filter(Boolean);
+
+    if (caseIds.length === 0) return "N/A";
+
+    return caseIds.map((caseNo, idx) => (
+      <span key={caseNo}>
+        <span
+          className="past-case-link"
+          onClick={(e) => {
+            e.stopPropagation();
+            openPastCaseModal(caseNo);
+          }}
+        >
+          Case {caseNo}
+        </span>
+        {idx < caseIds.length - 1 && ", "}
+      </span>
+    ));
+  };
 
   return (
     <div className="judge-case-page">
@@ -462,37 +589,9 @@ export default function JudgeCaseList() {
                           </span>
                         </div>
                         <div className="judge-case-detail">
-                          <span className="judge-case-key">
-                            Public Interest:
-                          </span>
+                          <span className="judge-case-key">Past Cases:</span>
                           <span className="judge-case-value">
-                            {caseItem.publicInterest}
-                          </span>
-                        </div>
-                        <div className="judge-case-detail">
-                          <span className="judge-case-key">Custody Time:</span>
-                          <span className="judge-case-value">
-                            {caseItem.custodyTime}
-                          </span>
-                        </div>
-                        <div className="judge-case-detail">
-                          <span className="judge-case-key">Adjournments:</span>
-                          <span className="judge-case-value">
-                            {caseItem.adjournments}
-                          </span>
-                        </div>
-                        <div className="judge-case-detail">
-                          <span className="judge-case-key">Bail Amount:</span>
-                          <span className="judge-case-value">
-                            {caseItem.bailAmount}
-                          </span>
-                        </div>
-                        <div className="judge-case-detail">
-                          <span className="judge-case-key">
-                            Bail Conditions:
-                          </span>
-                          <span className="judge-case-value">
-                            {caseItem.bailConditions}
+                            {renderPastCasesLinks(caseItem.pastRecords)}
                           </span>
                         </div>
                         <div className="judge-case-detail">
@@ -503,41 +602,46 @@ export default function JudgeCaseList() {
                             {caseItem.legalAid}
                           </span>
                         </div>
-                      </div>
-                      <div className="judge-case-detail judge-case-description">
+                      <div>
                         <span className="judge-case-key">Description:</span>
                         <span className="judge-case-value">
                           {caseItem.caseDescription
                             ? truncate(caseItem.caseDescription, 300)
                             : "No description available"}
                         </span>
-                        <button
-                          className="judge-fetch-similar-button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleFetchSimilarCases(caseItem.id);
-                          }}
-                          disabled={fetchingSimilar[caseItem.id]}
-                          aria-label={`Fetch similar cases for CASE-${caseItem.id}`}
-                        >
-                          {fetchingSimilar[caseItem.id]
-                            ? "Fetching..."
-                            : "Fetch Similar Cases"}
-                        </button>
-                        {/* New bail analysis button */}
-                        <button
-                          className="judge-analyze-bail-button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleBailAnalysis(caseItem.id);
-                          }}
-                          disabled={fetchingBail[caseItem.id]}
-                          aria-label={`Analyze bail for CASE-${caseItem.id}`}
-                        >
-                          {fetchingBail[caseItem.id]
-                            ? "Analyzing..."
-                            : "Analyze Bail"}
-                        </button>
+                      </div>
+                    </div>
+                      {/* Below is the "Case Description" + 2 Buttons in the same box */}
+                      <div className="judge-case-detail judge-case-description">
+                        
+                        <div className="judge-case-buttons">
+                          <button
+                            className="judge-fetch-similar-button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleFetchSimilarCases(caseItem.id);
+                            }}
+                            disabled={fetchingSimilar[caseItem.id]}
+                            aria-label={`Fetch similar cases for CASE-${caseItem.id}`}
+                          >
+                            {fetchingSimilar[caseItem.id]
+                              ? "Fetching..."
+                              : "Fetch Similar Cases"}
+                          </button>
+                          <button
+                            className="judge-analyze-bail-button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleBailAnalysis(caseItem.id);
+                            }}
+                            disabled={fetchingBail[caseItem.id]}
+                            aria-label={`Analyze bail for CASE-${caseItem.id}`}
+                          >
+                            {fetchingBail[caseItem.id]
+                              ? "Analyzing..."
+                              : "Analyze Bail"}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -617,8 +721,15 @@ export default function JudgeCaseList() {
           )}
         </div>
       </div>
+
+      {/* Similar Cases Modal */}
       {renderSimilarCasesModal()}
+
+      {/* Bail Analysis Modal */}
       {renderBailAnalysisModal()}
+
+      {/* Past Case Modal */}
+      {renderPastCaseModal()}
     </div>
   );
 }

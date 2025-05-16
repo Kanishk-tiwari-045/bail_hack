@@ -52,11 +52,6 @@ const Navbar = () => {
             {role === "under trial prisoner" && (
               <>
                 <li className="nav-item">
-                  <Link to="/bail" className="nav-link">
-                    Bail Eligibility
-                  </Link>
-                </li>
-                <li className="nav-item">
                   <Link to="/case-list" className="nav-link">
                     Cases
                   </Link>

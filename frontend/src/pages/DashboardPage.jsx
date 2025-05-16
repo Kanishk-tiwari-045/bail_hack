@@ -5,6 +5,7 @@ import UndertrialDashboard from '../components/Dashboard'; // Undertrial Prisone
 import JudgeDashboard from '../components/JudgeDashboard'; // Judge Dashboard
 import LegalAidDashboard from '../components/LegalDashboard'; // Legal Aid Provider Dashboard
 import { createClient } from '@supabase/supabase-js';
+import AdminDashboard from '../components/AdminDashboard';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -52,6 +53,9 @@ export default function DashboardPage() {
     DashboardComponent = JudgeDashboard;
   } else if (role === 'legal aid provider') {
     DashboardComponent = LegalAidDashboard;
+  }
+    else if (role === 'admin') {
+    DashboardComponent = AdminDashboard;
   } else {
     DashboardComponent = UndertrialDashboard;
   }

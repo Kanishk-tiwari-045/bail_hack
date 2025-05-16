@@ -22,6 +22,7 @@ const generationConfig = {
   maxOutputTokens: 8192,
   responseMimeType: "text/plain",
 };
+
 app.post("/legal-query", async (req, res) => {
   try {
     const { question, language = "english" } = req.body; // Default to English
